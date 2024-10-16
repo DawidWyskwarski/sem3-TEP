@@ -1,8 +1,8 @@
 #include <iostream>
+#include "Constants.h"
 
 using namespace std;
 
-const int initialValueEx1 = 34;
 void allocTableFill34(int size) {
 
     if(size > 0) {
@@ -20,7 +20,7 @@ void allocTableFill34(int size) {
 
         cout << "]" << endl;
 
-        delete table;
+        delete[] table;
     }
 }
 
