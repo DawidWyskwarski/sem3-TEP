@@ -5,6 +5,5 @@ set(CMAKE_CXX_STANDARD 98)
 
 add_executable(laby1
         Constants.h
-        Table.h
-        Table.cpp
-        Ex4.cpp)
+        Ex2-3.cpp
+)

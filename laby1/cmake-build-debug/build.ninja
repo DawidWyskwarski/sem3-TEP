@@ -49,14 +49,8 @@ cmake_ninja_workdir = C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby1/cmak
 
 build cmake_object_order_depends_target_laby1: phony || .
 
-build CMakeFiles/laby1.dir/Table.cpp.obj: CXX_COMPILER__laby1_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby1/Table.cpp || cmake_object_order_depends_target_laby1
-  DEP_FILE = CMakeFiles\laby1.dir\Table.cpp.obj.d
-  FLAGS = -g -std=gnu++98 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\laby1.dir
-  OBJECT_FILE_DIR = CMakeFiles\laby1.dir
-
-build CMakeFiles/laby1.dir/Ex4.cpp.obj: CXX_COMPILER__laby1_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby1/Ex4.cpp || cmake_object_order_depends_target_laby1
-  DEP_FILE = CMakeFiles\laby1.dir\Ex4.cpp.obj.d
+build CMakeFiles/laby1.dir/Ex2-3.cpp.obj: CXX_COMPILER__laby1_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby1/Ex2-3.cpp || cmake_object_order_depends_target_laby1
+  DEP_FILE = CMakeFiles\laby1.dir\Ex2-3.cpp.obj.d
   FLAGS = -g -std=gnu++98 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\laby1.dir
   OBJECT_FILE_DIR = CMakeFiles\laby1.dir
@@ -69,7 +63,7 @@ build CMakeFiles/laby1.dir/Ex4.cpp.obj: CXX_COMPILER__laby1_unscanned_Debug C$:/
 #############################################
 # Link the executable laby1.exe
 
-build laby1.exe: CXX_EXECUTABLE_LINKER__laby1_Debug CMakeFiles/laby1.dir/Table.cpp.obj CMakeFiles/laby1.dir/Ex4.cpp.obj
+build laby1.exe: CXX_EXECUTABLE_LINKER__laby1_Debug CMakeFiles/laby1.dir/Ex2-3.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\laby1.dir

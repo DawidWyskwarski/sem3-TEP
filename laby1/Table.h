@@ -1,5 +1,6 @@
 #ifndef TABLE_H
 #define TABLE_H
+
 #include<string>
 
 class Table {
