@@ -2,8 +2,9 @@
 #include <string>
 
 Number::Number() {
-    length = initialLength;
+    length = INITIAL_LENGTH;
     number = new int[length];
+    sign = POSITIVE;
 }
 
 Number::~Number() {
@@ -15,7 +16,12 @@ void Number::operator=(int value) {
 
     int* newNumber = new int[newLength];
 
-    for (int i = length-1; i >=0 ; --i) {
+    if(value < 0) {
+        sign = NEGATIVE;
+        value = -value;
+    }
+
+    for (int i = newLength-1; i >=0 ; --i) {
         newNumber[i] = value%10;
         value/=10;
     }
@@ -24,22 +30,33 @@ void Number::operator=(int value) {
     number = newNumber;
     length = newLength;
 }
+
 void Number::operator=(Number &other) {
     if (this != &other) {
         delete[] number;
 
-        number = other.number;
+        number = new int[other.length];
+        sign = other.sign;
         length = other.length;
+
+        for (int i=length-1; i>=0; i--) {
+            number[i] = other.number[i];
+        }
     }
 }
-/*Number Number::operator+(Number &other) {
+
+Number Number::operator+(Number &other) {
 }
+
 Number Number::operator-(Number &other) {
 }
+
 Number Number::operator*(Number &other) {
 }
+
 Number Number::operator/(Number &other) {
-}*/
+}
+
 std::string Number::toStr() {
     std::string result;
 
@@ -77,6 +94,11 @@ std::string Number::toStr() {
                 break;
         }
     }
+
+    if(sign == NEGATIVE) {
+        result = "-" + result;
+    }
+
     return result;
 }
 
@@ -95,4 +117,10 @@ int Number::intLength(int value) {
         value /= 10;
     }
     return length;
+}
+
+void Number::fillWith0s(int *table, int length) {
+    for(int i=0;i<length;++i) {
+        table[i] = 0;
+    }
 }

@@ -2,7 +2,9 @@
 #define NUMBER_H
 #include <string>
 
-const int initialLength = 3;
+#define INITIAL_LENGTH 1
+#define POSITIVE 1
+#define NEGATIVE 0
 
 class Number {
 
@@ -22,8 +24,10 @@ public:
 private:
     int* number;
     int length;
+    int sign;
 
     int intLength(int value);
+    void fillWith0s(int* table ,int length);
 };
 
 
