@@ -31,13 +31,13 @@ void Number::operator=(int value) {
     length = newLength;
 }
 
-void Number::operator=(Number &other) {
+void Number::operator=(const Number &other) {
     if (this != &other) {
         delete[] number;
 
-        number = new int[other.length];
         sign = other.sign;
         length = other.length;
+        number = new int[other.length];
 
         for (int i=length-1; i>=0; i--) {
             number[i] = other.number[i];
@@ -46,6 +46,23 @@ void Number::operator=(Number &other) {
 }
 
 Number Number::operator+(Number &other) {
+
+    Number result;
+
+    if (this->sign == POSITIVE && other.sign == POSITIVE) {
+        result.sign = POSITIVE;
+        result.number = add(this->number, other.number, this->length, other.length);
+        result.length = std::max(this->length, other.length) + 1;
+    }
+
+    if (this->sign == NEGATIVE && other.sign == NEGATIVE) {
+        result.sign = NEGATIVE;
+        result.number = add(this->number, other.number, this->length, other.length);
+        result.length = std::max(this->length, other.length) + (result.number[0] != 0);
+    }
+
+    result.trimLeading0s();
+    return result;
 }
 
 Number Number::operator-(Number &other) {
@@ -102,6 +119,34 @@ std::string Number::toStr() {
     return result;
 }
 
+int* Number::add(const int *number1,const int *number2, int len1, int len2) {
+
+    int resultLen = std::max(len1, len2) + 1;
+    int* result = new int[resultLen];
+
+    fillWith0s(result, resultLen);
+
+    int carry = 0;
+
+    for (int i = 0; i < resultLen - 1; ++i) {
+
+        int sum = carry;
+        if (i < len1) {
+            sum += number1[len1 - 1 - i];
+        }
+        if (i < len2) {
+            sum += number2[len2 - 1 - i];
+        }
+
+        result[resultLen - 1 - i] = sum % 10;
+        carry = sum / 10;
+    }
+
+    result[0] = carry;
+
+    return result;
+}
+
 int Number::intLength(int value) {
     if (value == 0) {
         return 1;
@@ -124,3 +169,26 @@ void Number::fillWith0s(int *table, int length) {
         table[i] = 0;
     }
 }
+
+void Number::trimLeading0s() {
+
+    int count0s = 0;
+
+    while (count0s < length-1 && number[count0s] == 0) {
+        ++count0s;
+    }
+
+    if (count0s != 0) {
+        int newLength = length - count0s;
+        int* trimmedResult = new int[newLength];
+
+        for (int i = 0; i < newLength; ++i) {
+            trimmedResult[i] = number[i + count0s];
+        }
+
+        delete[] number;
+        number = trimmedResult;
+        length = newLength;
+    }
+}
+

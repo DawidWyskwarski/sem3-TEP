@@ -5,14 +5,16 @@ int main() {
 
     Number number1;
     Number number2;
-    number2 = 3210;
+    number1 = -99;
+    number2 = -3;
     std::cout<<"Number1: "<<number1.toStr()<<std::endl;
     std::cout<<"Number2: "<<number2.toStr()<<std::endl;
 
-    number1 = number2;
-    number2 = 1;
+    Number number3 = number1 + number2;
 
     std::cout<<"Number1: "<<number1.toStr()<<std::endl;
     std::cout<<"Number2: "<<number2.toStr()<<std::endl;
+    std::cout<<"Number3: "<<number3.toStr()<<std::endl;
+
     return 0;
 }
