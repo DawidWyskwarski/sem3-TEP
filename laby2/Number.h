@@ -19,6 +19,13 @@ public:
     Number operator*(Number &number);
     Number operator/(Number &number);
 
+    bool operator>(Number &number);
+    bool operator<(Number &number);
+    bool operator==(Number &number);
+    bool operator!=(Number &number);
+    bool operator>=(Number &number);
+    bool operator<=(Number &number);
+
     std::string toStr();
 
 private:
@@ -29,6 +36,9 @@ private:
     int intLength(int value);
     void fillWith0s(int* table ,int length);
     int* add(const int* number1,const int* number2, int len1, int len2);
+    int* sub(const int* number1,const int* number2, int len1, int len2);
+    bool bigger1abs(const int* number1,const int* number2, int len1, int len2);
+    bool equalAbs(const int* number1,const int* number2, int len1, int len2);
     void trimLeading0s();
 };
 

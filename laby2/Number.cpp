@@ -50,15 +50,45 @@ Number Number::operator+(Number &other) {
     Number result;
 
     if (this->sign == POSITIVE && other.sign == POSITIVE) {
+
         result.sign = POSITIVE;
         result.number = add(this->number, other.number, this->length, other.length);
         result.length = std::max(this->length, other.length) + 1;
-    }
 
-    if (this->sign == NEGATIVE && other.sign == NEGATIVE) {
+    }else if (this->sign == NEGATIVE && other.sign == NEGATIVE) {
+
         result.sign = NEGATIVE;
         result.number = add(this->number, other.number, this->length, other.length);
-        result.length = std::max(this->length, other.length) + (result.number[0] != 0);
+        result.length = std::max(this->length, other.length) + 1;
+
+    }else if (this->sign == POSITIVE && other.sign == NEGATIVE) {
+
+        if(bigger1abs(this->number,other.number,this->length,other.length)
+            || equalAbs(this->number,other.number,this->length,other.length) ){
+
+            result.sign = POSITIVE;
+            result.number = sub(this->number, other.number, this->length, other.length);
+
+        }else {
+            result.sign = NEGATIVE;
+            result.number = sub(other.number, this->number, other.length, this->length);
+
+        }
+        result.length = std::max(this->length, other.length);
+
+    }else if (this->sign == NEGATIVE && other.sign == POSITIVE) {
+
+        if( bigger1abs(this->number,other.number,this->length,other.length) ) {
+            result.sign = NEGATIVE;
+            result.number = sub(this->number, other.number, this->length, other.length);
+
+        }else {
+            result.sign = POSITIVE;
+            result.number = sub(other.number, this->number, other.length, this->length);
+
+        }
+        result.length = std::max(this->length, other.length);
+
     }
 
     result.trimLeading0s();
@@ -66,12 +96,89 @@ Number Number::operator+(Number &other) {
 }
 
 Number Number::operator-(Number &other) {
+
+    Number result;
+    if (this->sign == POSITIVE && other.sign == POSITIVE) {
+
+        if( bigger1abs(other.number,this->number,other.length,this->length) ) {
+            result.sign = NEGATIVE;
+            result.number = sub(other.number, this->number, other.length, this->length);
+
+        }else {
+            result.sign = POSITIVE;
+            result.number = sub(this->number, other.number, this->length, other.length);
+
+        }
+        result.length = std::max(this->length, other.length);
+
+    }else if(this->sign == POSITIVE && other.sign == NEGATIVE) {
+        result.sign = POSITIVE;
+        result.number = add(this->number, other.number, this->length, other.length);
+        result.length = std::max(this->length, other.length) + 1;
+
+    }else if(this->sign == NEGATIVE && other.sign == POSITIVE) {
+        result.sign = NEGATIVE;
+        result.number = add(this->number, other.number, this->length, other.length);
+        result.length = std::max(this->length, other.length) + 1;
+
+    }else if(this->sign == NEGATIVE && other.sign == NEGATIVE) {
+
+        if( bigger1abs(this->number, other.number, this->length, other.length) ) {
+            result.sign = NEGATIVE;
+            result.number = sub(this->number, other.number, this->length, other.length);
+
+        }else {
+            result.sign = POSITIVE;
+            result.number = sub(other.number, this->number, other.length, this->length);
+
+        }
+        result.length = std::max(this->length, other.length);
+    }
+
+    result.trimLeading0s();
+    return result;
+
 }
 
 Number Number::operator*(Number &other) {
 }
 
 Number Number::operator/(Number &other) {
+}
+
+bool Number::operator>(Number &other) {
+    if(this->sign > other.sign) {
+        return true;
+    }
+    if(this->sign < other.sign) {
+        return false;
+    }
+
+    if(this->sign == POSITIVE) {
+        return bigger1abs(this->number, other.number, this->length, other.length);
+    }
+
+    return bigger1abs(other.number, this->number, other.length, this->length);
+}
+bool Number::operator<(Number &other) {
+    return !(*this>other) && *this!=other;
+}
+
+bool Number::operator==(Number &other) {
+    if (this->sign != other.sign) {
+        return false;
+    }
+    equalAbs(this->number, other.number, this->length, other.length);
+}
+bool Number::operator!=(Number &other) {
+    return !(*this == other);
+}
+
+bool Number::operator>=(Number &other) {
+    return *this > other || *this == other;
+}
+bool Number::operator<=(Number &other) {
+    return *this < other || *this == other;
 }
 
 std::string Number::toStr() {
@@ -119,7 +226,7 @@ std::string Number::toStr() {
     return result;
 }
 
-int* Number::add(const int *number1,const int *number2, int len1, int len2) {
+int* Number::add(const int *number1, const int *number2, int len1, int len2) {
 
     int resultLen = std::max(len1, len2) + 1;
     int* result = new int[resultLen];
@@ -143,6 +250,37 @@ int* Number::add(const int *number1,const int *number2, int len1, int len2) {
     }
 
     result[0] = carry;
+
+    return result;
+}
+
+int* Number::sub(const int *number1, const int *number2, int len1, int len2) {
+
+    //number1 is always bigger than number2
+    int resultLen = std::max(len1, len2);
+    int* result = new int[resultLen];
+
+    fillWith0s(result, resultLen);
+
+    bool carry = false;
+
+    for(int i = 0; i < resultLen; ++i) {
+
+        int diff = number1[len1 -1 - i] - carry;
+
+        if (i < len2) {
+            diff -= number2[len2 - 1 - i];
+        }
+
+        if (diff<0) {
+            diff+=10;
+            carry = true;
+        }else {
+            carry = false;
+        }
+
+        result[resultLen-1-i] = diff;
+    }
 
     return result;
 }
@@ -192,3 +330,36 @@ void Number::trimLeading0s() {
     }
 }
 
+bool Number::bigger1abs(const int *number1, const int *number2, int len1, int len2) {
+    if(len1 > len2) {
+        return true;
+    }
+    if(len2 > len1 ) {
+        return false;
+    }
+
+    for(int i=0;i<len1;i++) {
+        if(number1[i] > number2[i]) {
+            return true;
+        }
+
+        if(number1[i] < number2[i]) {
+            return false;
+        }
+    }
+
+    return false;
+}
+
+bool Number::equalAbs(const int *number1, const int *number2, int len1, int len2) {
+    if (len1 != len2) {
+        return false;
+    }
+
+    for(int i=0;i<len1;++i) {
+        if(number1[i] != number2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
