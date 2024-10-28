@@ -141,6 +141,30 @@ Number Number::operator-(Number &other) {
 }
 
 Number Number::operator*(Number &other) {
+    int rows = other.length;
+    int cols = this->length + rows;
+
+    Number result;
+    result.sign = this->sign * other.sign;
+    result.length = cols;
+    result.number = new int[cols];
+
+    fillWith0s(result.number, cols);
+
+    for (int i = 0; i < rows; ++i) {
+        int carry = 0;
+        for (int j = 0; j < this->length; ++j) {
+            int pos = cols - 1 - (i + j);
+            int mul = other.number[rows - 1 - i] * this->number[this->length - 1 - j] + result.number[pos] + carry;
+
+            result.number[pos] = mul % 10;
+            carry = mul / 10;
+        }
+        result.number[cols - 1 - (i + this->length)] += carry;
+    }
+
+    result.trimLeading0s();
+    return result;
 }
 
 Number Number::operator/(Number &other) {
