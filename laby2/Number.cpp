@@ -4,6 +4,7 @@
 Number::Number() {
     length = INITIAL_LENGTH;
     number = new int[length];
+    number[0] = 0;
     sign = POSITIVE;
 }
 
@@ -45,93 +46,55 @@ void Number::operator=(const Number &other) {
     }
 }
 
-Number Number::operator+(Number &other) {
+Number Number::operator+(const Number &other) {
 
     Number result;
 
-    if (this->sign == POSITIVE && other.sign == POSITIVE) {
+    if (this->sign == other.sign) {
 
-        result.sign = POSITIVE;
+        result.sign = this->sign;
         result.number = add(this->number, other.number, this->length, other.length);
         result.length = std::max(this->length, other.length) + 1;
+    }else {
 
-    }else if (this->sign == NEGATIVE && other.sign == NEGATIVE) {
+        if( bigger1abs(other.number,this->number,other.length,this->length) ){
 
-        result.sign = NEGATIVE;
-        result.number = add(this->number, other.number, this->length, other.length);
-        result.length = std::max(this->length, other.length) + 1;
-
-    }else if (this->sign == POSITIVE && other.sign == NEGATIVE) {
-
-        if(bigger1abs(this->number,other.number,this->length,other.length)
-            || equalAbs(this->number,other.number,this->length,other.length) ){
-
-            result.sign = POSITIVE;
-            result.number = sub(this->number, other.number, this->length, other.length);
-
-        }else {
-            result.sign = NEGATIVE;
+            result.sign = other.sign;
             result.number = sub(other.number, this->number, other.length, this->length);
-
-        }
-        result.length = std::max(this->length, other.length);
-
-    }else if (this->sign == NEGATIVE && other.sign == POSITIVE) {
-
-        if( bigger1abs(this->number,other.number,this->length,other.length) ) {
-            result.sign = NEGATIVE;
-            result.number = sub(this->number, other.number, this->length, other.length);
-
         }else {
-            result.sign = POSITIVE;
-            result.number = sub(other.number, this->number, other.length, this->length);
 
+            result.sign = this->sign;
+            result.number = sub(this->number, other.number, this->length, other.length);
         }
-        result.length = std::max(this->length, other.length);
 
+        result.length = std::max(this->length, other.length);
     }
 
     result.trimLeading0s();
     return result;
 }
 
-Number Number::operator-(Number &other) {
-
+Number Number::operator-(const Number &other) {
     Number result;
-    if (this->sign == POSITIVE && other.sign == POSITIVE) {
 
-        if( bigger1abs(other.number,this->number,other.length,this->length) ) {
-            result.sign = NEGATIVE;
-            result.number = sub(other.number, this->number, other.length, this->length);
+    if(&other == this) {
+        return result;
+    }
 
-        }else {
-            result.sign = POSITIVE;
-            result.number = sub(this->number, other.number, this->length, other.length);
-
-        }
-        result.length = std::max(this->length, other.length);
-
-    }else if(this->sign == POSITIVE && other.sign == NEGATIVE) {
-        result.sign = POSITIVE;
+    if (this->sign != other.sign) {
+        result.sign = this->sign;
         result.number = add(this->number, other.number, this->length, other.length);
         result.length = std::max(this->length, other.length) + 1;
+    }else {
 
-    }else if(this->sign == NEGATIVE && other.sign == POSITIVE) {
-        result.sign = NEGATIVE;
-        result.number = add(this->number, other.number, this->length, other.length);
-        result.length = std::max(this->length, other.length) + 1;
-
-    }else if(this->sign == NEGATIVE && other.sign == NEGATIVE) {
-
-        if( bigger1abs(this->number, other.number, this->length, other.length) ) {
-            result.sign = NEGATIVE;
+        if (bigger1abs(this->number, other.number, this->length, other.length)) {
+            result.sign = this->sign;
             result.number = sub(this->number, other.number, this->length, other.length);
-
-        }else {
-            result.sign = POSITIVE;
+        } else {
+            result.sign = -this->sign;
             result.number = sub(other.number, this->number, other.length, this->length);
-
         }
+
         result.length = std::max(this->length, other.length);
     }
 
@@ -140,9 +103,9 @@ Number Number::operator-(Number &other) {
 
 }
 
-Number Number::operator*(Number &other) {
-    int rows = other.length;
-    int cols = this->length + rows;
+Number Number::operator*(const Number &other) {
+    const int rows = other.length;
+    const int cols = this->length + rows;
 
     Number result;
     result.sign = this->sign * other.sign;
@@ -167,10 +130,10 @@ Number Number::operator*(Number &other) {
     return result;
 }
 
-Number Number::operator/(Number &other) {
+Number Number::operator/(const Number &other) {
 }
 
-bool Number::operator>(Number &other) {
+bool Number::operator>(const Number &other) {
     if(this->sign > other.sign) {
         return true;
     }
@@ -184,24 +147,24 @@ bool Number::operator>(Number &other) {
 
     return bigger1abs(other.number, this->number, other.length, this->length);
 }
-bool Number::operator<(Number &other) {
+bool Number::operator<(const Number &other) {
     return !(*this>other) && *this!=other;
 }
 
-bool Number::operator==(Number &other) {
+bool Number::operator==(const Number &other) {
     if (this->sign != other.sign) {
         return false;
     }
-    equalAbs(this->number, other.number, this->length, other.length);
+    return equalAbs(this->number, other.number, this->length, other.length);
 }
-bool Number::operator!=(Number &other) {
+bool Number::operator!=(const Number &other) {
     return !(*this == other);
 }
 
-bool Number::operator>=(Number &other) {
+bool Number::operator>=(const Number &other) {
     return *this > other || *this == other;
 }
-bool Number::operator<=(Number &other) {
+bool Number::operator<=(const Number &other) {
     return *this < other || *this == other;
 }
 
@@ -243,16 +206,16 @@ std::string Number::toStr() {
         }
     }
 
-    if(sign == NEGATIVE) {
+    if(sign == NEGATIVE && result!="0") {
         result = "-" + result;
     }
 
     return result;
 }
 
-int* Number::add(const int *number1, const int *number2, int len1, int len2) {
+int* Number::add(const int *number1, const int *number2,const  int len1,const  int len2) {
 
-    int resultLen = std::max(len1, len2) + 1;
+    const int resultLen = std::max(len1, len2) + 1;
     int* result = new int[resultLen];
 
     fillWith0s(result, resultLen);
@@ -278,7 +241,7 @@ int* Number::add(const int *number1, const int *number2, int len1, int len2) {
     return result;
 }
 
-int* Number::sub(const int *number1, const int *number2, int len1, int len2) {
+int* Number::sub(const int *number1, const int *number2,const int len1,const int len2) {
 
     //number1 is always bigger than number2
     int resultLen = std::max(len1, len2);
@@ -326,7 +289,7 @@ int Number::intLength(int value) {
     return length;
 }
 
-void Number::fillWith0s(int *table, int length) {
+void Number::fillWith0s(int *table,const int length) {
     for(int i=0;i<length;++i) {
         table[i] = 0;
     }
@@ -354,7 +317,7 @@ void Number::trimLeading0s() {
     }
 }
 
-bool Number::bigger1abs(const int *number1, const int *number2, int len1, int len2) {
+bool Number::bigger1abs(const int *number1, const int *number2,const int len1,const int len2) {
     if(len1 > len2) {
         return true;
     }
@@ -375,7 +338,7 @@ bool Number::bigger1abs(const int *number1, const int *number2, int len1, int le
     return false;
 }
 
-bool Number::equalAbs(const int *number1, const int *number2, int len1, int len2) {
+bool Number::equalAbs(const int *number1, const int *number2,const int len1,const int len2) {
     if (len1 != len2) {
         return false;
     }

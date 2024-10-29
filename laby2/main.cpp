@@ -6,7 +6,7 @@ int main() {
     Number number1;
     Number number2;
     number1 = 77;
-    number2 = 83;
+    number2 = 77;
     std::cout<<"Number1: "<<number1.toStr()<<std::endl;
     std::cout<<"Number2: "<<number2.toStr()<<std::endl;
 

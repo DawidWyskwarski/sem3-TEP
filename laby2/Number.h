@@ -13,18 +13,18 @@ public:
     ~Number();
 
     void operator=(int value);
-    void operator=(const Number &number);
-    Number operator+(Number &number);
-    Number operator-(Number &number);
-    Number operator*(Number &number);
-    Number operator/(Number &number);
+    void operator=(const Number &other);
+    Number operator+(const Number &other);
+    Number operator-(const Number &other);
+    Number operator*(const Number &other);
+    Number operator/(const Number &other);
 
-    bool operator>(Number &number);
-    bool operator<(Number &number);
-    bool operator==(Number &number);
-    bool operator!=(Number &number);
-    bool operator>=(Number &number);
-    bool operator<=(Number &number);
+    bool operator>(const Number &other);
+    bool operator<(const Number &other);
+    bool operator==(const Number &other);
+    bool operator!=(const Number &other);
+    bool operator>=(const Number &other);
+    bool operator<=(const Number &other);
 
     std::string toStr();
 
@@ -35,7 +35,7 @@ private:
 
     int intLength(int value);
     void fillWith0s(int* table ,int length);
-    int* add(const int* number1,const int* number2, int len1, int len2);
+    int* add(const int* number1,const int* number2,int len1, int len2);
     int* sub(const int* number1,const int* number2, int len1, int len2);
     bool bigger1abs(const int* number1,const int* number2, int len1, int len2);
     bool equalAbs(const int* number1,const int* number2, int len1, int len2);
