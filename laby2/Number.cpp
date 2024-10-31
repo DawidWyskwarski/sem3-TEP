@@ -1,4 +1,6 @@
 #include "Number.h"
+
+#include <stdexcept>
 #include <string>
 
 Number::Number() {
@@ -53,9 +55,17 @@ Number Number::operator+(const Number &other) {
     if (this->sign == other.sign) {
 
         result.sign = this->sign;
+
+        delete[] result.number;
         result.number = add(this->number, other.number, this->length, other.length);
         result.length = std::max(this->length, other.length) + 1;
     }else {
+
+        if( equalAbs(other.number,this->number,other.length,this->length) ) {
+            return result;
+        }
+
+        delete[] result.number;
 
         if( bigger1abs(other.number,this->number,other.length,this->length) ){
 
@@ -77,15 +87,23 @@ Number Number::operator+(const Number &other) {
 Number Number::operator-(const Number &other) {
     Number result;
 
+    if(*this == other) {
+        return result;
+    }
+
     if(&other == this) {
         return result;
     }
 
     if (this->sign != other.sign) {
         result.sign = this->sign;
+
+        delete[] result.number;
         result.number = add(this->number, other.number, this->length, other.length);
         result.length = std::max(this->length, other.length) + 1;
     }else {
+
+        delete[] result.number;
 
         if (bigger1abs(this->number, other.number, this->length, other.length)) {
             result.sign = this->sign;
@@ -104,12 +122,22 @@ Number Number::operator-(const Number &other) {
 }
 
 Number Number::operator*(const Number &other) {
+    Number result;
+
+    if(other.length == 1 && other.number[0] == 0) {
+        return result;
+    }
+    if(this->length == 1 && this->number[0] == 0) {
+        return result;
+    }
+
     const int rows = other.length;
     const int cols = this->length + rows;
 
-    Number result;
     result.sign = this->sign * other.sign;
     result.length = cols;
+
+    delete[] result.number;
     result.number = new int[cols];
 
     fillWith0s(result.number, cols);
@@ -131,6 +159,18 @@ Number Number::operator*(const Number &other) {
 }
 
 Number Number::operator/(const Number &other) {
+
+    if(other.length == 1 && other.number[0] == 0) {
+        throw std::invalid_argument( "Error. Can't divide by 0" );
+    }
+    Number result;
+
+    if(*this < other) {
+        return result;
+    }
+    if(this->length == 1 && this->number[0] == 0) {
+        return result;
+    }
 }
 
 bool Number::operator>(const Number &other) {
@@ -206,7 +246,7 @@ std::string Number::toStr() {
         }
     }
 
-    if(sign == NEGATIVE && result!="0") {
+    if(sign == NEGATIVE) {
         result = "-" + result;
     }
 
