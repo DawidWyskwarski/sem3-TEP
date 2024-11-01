@@ -171,6 +171,58 @@ Number Number::operator/(const Number &other) {
     if(this->length == 1 && this->number[0] == 0) {
         return result;
     }
+
+    result.length = this->length;
+    result.sign = this->sign * other.sign;
+
+    delete[] result.number;
+    result.number = new int[result.length];
+    fillWith0s(result.number,result.length);
+
+    int* dividend = new int[this->length];
+
+    for(int i=0;i<this->length;++i) {
+        if(i < this->length) {
+            dividend[i] = this->number[i];
+        }else {
+            dividend[i] = 0;
+        }
+    }
+
+    int* divisor = new int[this->length];
+
+    for(int i=0;i<this->length;++i) {
+        if(i < other.length) {
+            divisor[i] = other.number[i];
+        }else {
+
+            divisor[i] = 0;
+        }
+    }
+
+    for(int i = 0; i < this->length; ++i) {
+
+        while(! bigger1abs(divisor,dividend,this->length,this->length) ) {
+            result.number[i]++;
+            int* tmp = sub(dividend,divisor,this->length,this->length);
+
+            for(int j = 0; j < this->length; ++j) {
+                dividend[j] = tmp[j];
+            }
+            delete[] tmp;
+        }
+
+        for(int j = this->length-1;j>0;--j) {
+            divisor[j] = divisor[j-1];
+        }
+        divisor[0] = 0;
+
+    }
+
+    result.trimLeading0s();
+    delete[] divisor;
+    delete[] dividend;
+    return result;
 }
 
 bool Number::operator>(const Number &other) {
