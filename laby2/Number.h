@@ -5,11 +5,14 @@
 #define INITIAL_LENGTH 1
 #define POSITIVE 1
 #define NEGATIVE (-1)
+#define BASE10 10
+#define ERROR_DIVIDE_0 "Error. Can't divide by 0"
 
 class Number {
 
 public:
     Number();
+    Number(const Number &other);
     ~Number();
 
     void operator=(int value);

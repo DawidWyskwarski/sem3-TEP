@@ -10,6 +10,20 @@ Number::Number() {
     sign = POSITIVE;
 }
 
+Number::Number(const Number &other) {
+    if (this != &other) {
+        delete[] number;
+
+        sign = other.sign;
+        length = other.length;
+        number = new int[other.length];
+
+        for (int i=length-1; i>=0; i--) {
+            number[i] = other.number[i];
+        }
+    }
+}
+
 Number::~Number() {
     delete[] number;
 }
@@ -25,8 +39,8 @@ void Number::operator=(int value) {
     }
 
     for (int i = newLength-1; i >=0 ; --i) {
-        newNumber[i] = value%10;
-        value/=10;
+        newNumber[i] = value % BASE10;
+        value /= BASE10;
     }
 
     delete[] number;
@@ -52,32 +66,32 @@ Number Number::operator+(const Number &other) {
 
     Number result;
 
-    if (this->sign == other.sign) {
+    if (sign == other.sign) {
 
-        result.sign = this->sign;
+        result.sign = sign;
 
         delete[] result.number;
-        result.number = add(this->number, other.number, this->length, other.length);
-        result.length = std::max(this->length, other.length) + 1;
+        result.number = add(number, other.number, length, other.length);
+        result.length = std::max(length, other.length) + 1;
     }else {
 
-        if( equalAbs(other.number,this->number,other.length,this->length) ) {
+        if( equalAbs(other.number,number,other.length,length) ) {
             return result;
         }
 
         delete[] result.number;
 
-        if( bigger1abs(other.number,this->number,other.length,this->length) ){
+        if( bigger1abs(other.number,number,other.length,length) ){
 
             result.sign = other.sign;
-            result.number = sub(other.number, this->number, other.length, this->length);
+            result.number = sub(other.number, number, other.length, length);
         }else {
 
-            result.sign = this->sign;
-            result.number = sub(this->number, other.number, this->length, other.length);
+            result.sign = sign;
+            result.number = sub(number, other.number, length, other.length);
         }
 
-        result.length = std::max(this->length, other.length);
+        result.length = std::max(length, other.length);
     }
 
     result.trimLeading0s();
@@ -91,29 +105,25 @@ Number Number::operator-(const Number &other) {
         return result;
     }
 
-    if(&other == this) {
-        return result;
-    }
-
-    if (this->sign != other.sign) {
-        result.sign = this->sign;
+    if (sign != other.sign) {
+        result.sign = sign;
 
         delete[] result.number;
-        result.number = add(this->number, other.number, this->length, other.length);
-        result.length = std::max(this->length, other.length) + 1;
+        result.number = add(number, other.number, length, other.length);
+        result.length = std::max(length, other.length) + 1;
     }else {
 
         delete[] result.number;
 
-        if (bigger1abs(this->number, other.number, this->length, other.length)) {
-            result.sign = this->sign;
-            result.number = sub(this->number, other.number, this->length, other.length);
+        if (bigger1abs(number, other.number, length, other.length)) {
+            result.sign = sign;
+            result.number = sub(number, other.number, length, other.length);
         } else {
-            result.sign = -this->sign;
-            result.number = sub(other.number, this->number, other.length, this->length);
+            result.sign = -sign;
+            result.number = sub(other.number, number, other.length, length);
         }
 
-        result.length = std::max(this->length, other.length);
+        result.length = std::max(length, other.length);
     }
 
     result.trimLeading0s();
@@ -127,14 +137,14 @@ Number Number::operator*(const Number &other) {
     if(other.length == 1 && other.number[0] == 0) {
         return result;
     }
-    if(this->length == 1 && this->number[0] == 0) {
+    if(length == 1 && number[0] == 0) {
         return result;
     }
 
     const int rows = other.length;
-    const int cols = this->length + rows;
+    const int cols = length + rows;
 
-    result.sign = this->sign * other.sign;
+    result.sign = sign * other.sign;
     result.length = cols;
 
     delete[] result.number;
@@ -144,14 +154,14 @@ Number Number::operator*(const Number &other) {
 
     for (int i = 0; i < rows; ++i) {
         int carry = 0;
-        for (int j = 0; j < this->length; ++j) {
+        for (int j = 0; j < length; ++j) {
             int pos = cols - 1 - (i + j);
-            int mul = other.number[rows - 1 - i] * this->number[this->length - 1 - j] + result.number[pos] + carry;
+            int mul = other.number[rows - 1 - i] * number[length - 1 - j] + result.number[pos] + carry;
 
-            result.number[pos] = mul % 10;
-            carry = mul / 10;
+            result.number[pos] = mul % BASE10;
+            carry = mul / BASE10;
         }
-        result.number[cols - 1 - (i + this->length)] += carry;
+        result.number[cols - 1 - (i + length)] += carry;
     }
 
     result.trimLeading0s();
@@ -161,37 +171,37 @@ Number Number::operator*(const Number &other) {
 Number Number::operator/(const Number &other) {
 
     if(other.length == 1 && other.number[0] == 0) {
-        throw std::invalid_argument( "Error. Can't divide by 0" );
+        throw std::invalid_argument( ERROR_DIVIDE_0 );
     }
     Number result;
 
-    if(*this < other) {
+    if(bigger1abs(other.number, number, other.length, length)) {
         return result;
     }
-    if(this->length == 1 && this->number[0] == 0) {
+    if(length == 1 && number[0] == 0) {
         return result;
     }
 
-    result.length = this->length;
-    result.sign = this->sign * other.sign;
+    result.length = length-other.length+1;
+    result.sign = sign * other.sign;
 
     delete[] result.number;
     result.number = new int[result.length];
     fillWith0s(result.number,result.length);
 
-    int* dividend = new int[this->length];
+    int* dividend = new int[length];
 
-    for(int i=0;i<this->length;++i) {
-        if(i < this->length) {
-            dividend[i] = this->number[i];
+    for(int i=0;i<length;++i) {
+        if(i < length) {
+            dividend[i] = number[i];
         }else {
             dividend[i] = 0;
         }
     }
 
-    int* divisor = new int[this->length];
+    int* divisor = new int[length];
 
-    for(int i=0;i<this->length;++i) {
+    for(int i=0;i<length;++i) {
         if(i < other.length) {
             divisor[i] = other.number[i];
         }else {
@@ -200,54 +210,54 @@ Number Number::operator/(const Number &other) {
         }
     }
 
-    for(int i = 0; i < this->length; ++i) {
+    for(int i = 0; i< length - other.length + 1; ++i) {
 
-        while(! bigger1abs(divisor,dividend,this->length,this->length) ) {
+        while(! bigger1abs(divisor,dividend,length,length) ) {
             result.number[i]++;
-            int* tmp = sub(dividend,divisor,this->length,this->length);
+            int* tmp = sub(dividend,divisor,length,length);
 
-            for(int j = 0; j < this->length; ++j) {
+            for(int j = 0; j < length; ++j) {
                 dividend[j] = tmp[j];
             }
             delete[] tmp;
         }
 
-        for(int j = this->length-1;j>0;--j) {
+        for(int j = length-1;j>0;--j) {
             divisor[j] = divisor[j-1];
         }
         divisor[0] = 0;
 
     }
-
-    result.trimLeading0s();
     delete[] divisor;
     delete[] dividend;
+
+    result.trimLeading0s();
     return result;
 }
 
 bool Number::operator>(const Number &other) {
-    if(this->sign > other.sign) {
+    if(sign > other.sign) {
         return true;
     }
-    if(this->sign < other.sign) {
+    if(sign < other.sign) {
         return false;
     }
 
-    if(this->sign == POSITIVE) {
-        return bigger1abs(this->number, other.number, this->length, other.length);
+    if(sign == POSITIVE) {
+        return bigger1abs(number, other.number, length, other.length);
     }
 
-    return bigger1abs(other.number, this->number, other.length, this->length);
+    return bigger1abs(other.number, number, other.length, length);
 }
 bool Number::operator<(const Number &other) {
     return !(*this>other) && *this!=other;
 }
 
 bool Number::operator==(const Number &other) {
-    if (this->sign != other.sign) {
+    if (sign != other.sign) {
         return false;
     }
-    return equalAbs(this->number, other.number, this->length, other.length);
+    return equalAbs(number, other.number, length, other.length);
 }
 bool Number::operator!=(const Number &other) {
     return !(*this == other);
@@ -324,8 +334,8 @@ int* Number::add(const int *number1, const int *number2,const  int len1,const  i
             sum += number2[len2 - 1 - i];
         }
 
-        result[resultLen - 1 - i] = sum % 10;
-        carry = sum / 10;
+        result[resultLen - 1 - i] = sum % BASE10;
+        carry = sum / BASE10;
     }
 
     result[0] = carry;
@@ -352,7 +362,7 @@ int* Number::sub(const int *number1, const int *number2,const int len1,const int
         }
 
         if (diff<0) {
-            diff+=10;
+            diff += BASE10;
             carry = true;
         }else {
             carry = false;
@@ -376,7 +386,7 @@ int Number::intLength(int value) {
 
     while (value != 0) {
         length++;
-        value /= 10;
+        value /= BASE10;
     }
     return length;
 }
