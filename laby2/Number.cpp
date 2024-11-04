@@ -3,6 +3,11 @@
 #include <stdexcept>
 #include <string>
 
+Number operator>=(const int lhs, Number & rhs) {
+    rhs = lhs;
+    return rhs;
+}
+
 Number::Number() {
     length = INITIAL_LENGTH;
     number = new int[length];
@@ -263,9 +268,23 @@ bool Number::operator!=(const Number &other) {
     return !(*this == other);
 }
 
-bool Number::operator>=(const Number &other) {
-    return *this > other || *this == other;
+Number& Number::operator>=(Number &other) {
+    other = *this;
+
+    return other;
 }
+
+int& Number::operator>=(int& other) const {
+    other = number[0];
+
+    for(int i=1;i<length;++i) {
+        other *= BASE10;
+        other += number[i];
+    }
+    return other;
+}
+
+
 bool Number::operator<=(const Number &other) {
     return *this < other || *this == other;
 }

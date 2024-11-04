@@ -26,7 +26,8 @@ public:
     bool operator<(const Number &other);
     bool operator==(const Number &other);
     bool operator!=(const Number &other);
-    bool operator>=(const Number &other);
+    Number& operator>=(Number &other);
+    int& operator>=(int& number) const;
     bool operator<=(const Number &other);
 
     std::string toStr();
@@ -45,6 +46,6 @@ private:
     void trimLeading0s();
 };
 
-
+Number operator>=(const int lhs, Number & rhs);
 
 #endif //NUMBER_H
