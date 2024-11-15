@@ -6,12 +6,13 @@
 #define NODE_H
 #include <string>
 
+#define INITIAL_NODE_VALUE "1"
 
 class Node {
 
 public:
     Node(const std::string& constrName);
-    Node(const std::string &constrName, Node *constrParent, Node *constrLeft, Node *constrRight);
+    Node();
 
     std::string getName();
     void setName(const std::string& newName);
@@ -19,6 +20,11 @@ public:
     Node* getLeft() const;
     Node* getRight() const;
     Node* getParent() const;
+
+    void setLeft(Node* newLeft);
+    void setRight(Node* newRight);
+    void setParent(Node* newParent);
+    //Node was adopted
 
 private:
     std::string name;
