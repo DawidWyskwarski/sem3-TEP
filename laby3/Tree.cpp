@@ -7,28 +7,69 @@
 #include <iostream>
 
 Tree::Tree()
-: root(nullptr) {}
+: root() {}
 
 
+void Tree::buildTree(const std::string &formula) {
 
-std::string Tree::nextSymbol(const std::string& formula, int i) {
+    delete root;
+    root = new Node();
+    buildTree(formula,root,0);
 
-    while(i<formula.length() || formula[i] == ' ') {
-        ++i;
+}
+
+int Tree::buildTree(const std::string& formula, Node *node, const int index) {
+
+    std::string symbol = nextSymbol(formula,index);
+
+    if(symbol.empty())
+        return index;
+
+    node -> setName(symbol);
+
+    if( isOperator1el(symbol) ) {
+        node -> setLeft(new Node());
+
+        return buildTree(formula,node->getLeft(), index + symbol.length() + 1);
     }
-    std::string result;
+    if ( isOperator2el(symbol) ) {
+        node -> setLeft(new Node());
+        node -> setRight(new Node());
 
-    for(;i<formula.length() && formula[i] != ' ';++i) {
-        result += formula[i];
+        return buildTree(formula,node->getRight(), buildTree(formula, node->getLeft(), index+ symbol.length() + 1));
+    }
+    if( isVar(symbol)) {
+        variables.insert(std::make_pair(symbol,0) );
     }
 
-    return result;
+    return index + symbol.length() + 1;
+}
+
+
+std::string Tree::nextSymbol(const std::string& formula, int index) {
+    if (index >= formula.size()) return "";
+    size_t nextSpace = formula.find(' ', index);
+    if (nextSpace == std::string::npos) {
+        return formula.substr(index);  // Do końca
+    }
+    return formula.substr(index, nextSpace - index);
 }
 
 void Tree::printTree() {
     printTree(root);
     std::cout<< std::endl;
 }
+
+void Tree::printVars() {
+    if(variables.empty())
+        std::cout<<"There are no variables!";
+
+    for (auto var: variables) {
+        std::cout << var.first << ", ";
+    }
+    std::cout<< std::endl;
+}
+
 
 void Tree::printTree(Node *cur) {
     if (cur != nullptr) {
@@ -58,3 +99,19 @@ bool Tree::isOperator1el(std::string symbol) {
     }
     return false;
 }
+
+bool Tree::isVar(const std::string &formula) {
+
+    for(int i=0;i<formula.length();++i) {
+        if(formula[i] > '9' || formula[i] < '0') {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Tree::~Tree() {
+    delete root;
+}
+

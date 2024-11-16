@@ -11,24 +11,22 @@
 class Node {
 
 public:
-    Node(const std::string& constrName);
+    Node(std::string constrName);
     Node();
 
     std::string getName();
-    void setName(const std::string& newName);
+    void setName(std::string newName);
 
     Node* getLeft() const;
     Node* getRight() const;
-    Node* getParent() const;
 
     void setLeft(Node* newLeft);
     void setRight(Node* newRight);
-    void setParent(Node* newParent);
-    //Node was adopted
+
+    ~Node();
 
 private:
     std::string name;
-    Node* parent;
     Node* left;
     Node* right;
 };

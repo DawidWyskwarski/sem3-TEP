@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "Tree.h"
+
 int findFirstSpace(const std::string& input) {
     for(int i=0;i<input.length();++i) {
         if (input[i] == ' ') {
@@ -8,7 +10,6 @@ int findFirstSpace(const std::string& input) {
     }
     return -1;
 }
-
 
 void whichOperation(const std::string& input) {
 
@@ -46,7 +47,7 @@ void whichOperation(const std::string& input) {
 
 int main() {
 
-    std::cout<<"Enter the operation you want to perform:\n"
+    /*std::cout<<"Enter the operation you want to perform:\n"
                "enter <formula>\n"
                "vars\n"
                "print\n"
@@ -60,7 +61,15 @@ int main() {
         std::cout<<">";
         std::getline(std::cin,input);
         whichOperation(input);
-    }
+    }*/
+
+    Tree tree;
+
+    tree.buildTree("+ + 1 1 1");
+
+    tree.printTree();
+    tree.printVars();
+
 
     return 0;
 }

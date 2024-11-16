@@ -15,16 +15,21 @@ public:
 
     void buildTree(const std::string& formula);
     void printTree();
+    void printVars();
+
+    ~Tree();
 
 private:
     Node* root;
     std::map<std::string,int> variables;
 
-    std::string nextSymbol(const std::string& formula, int i);
+    std::string nextSymbol(const std::string& formula, int index);
 
     bool isOperator2el(std::string symbol);
     bool isOperator1el(std::string symbol);
     void printTree(Node* cur);
+    int buildTree(const std::string& formula, Node* node, int index);
+    bool isVar(const std::string& formula);
 };
 
 
