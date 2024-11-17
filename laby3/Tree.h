@@ -16,6 +16,7 @@ public:
     void buildTree(const std::string& formula);
     void printTree();
     void printVars();
+    void printResult(const std::string& values);
 
     ~Tree();
 
@@ -23,13 +24,18 @@ private:
     Node* root;
     std::map<std::string,int> variables;
 
-    std::string nextSymbol(const std::string& formula, int index);
-
-    bool isOperator2el(std::string symbol);
-    bool isOperator1el(std::string symbol);
     void printTree(Node* cur);
     int buildTree(const std::string& formula, Node* node, int index);
+    double compute(Node* cur);
+
+    bool isOperator2el(const std::string& symbol);
+    bool isOperator1el(const std::string& symbol);
+
     bool isVar(const std::string& formula);
+
+    std::string nextSymbol(const std::string& formula, int index);
+
+    int stringToInt(const std::string& number);
 };
 
 
