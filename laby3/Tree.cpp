@@ -22,31 +22,23 @@ void Tree::buildTree(const std::string &formula) {
 
 }
 
-int Tree::buildTree(const std::string& formula, Node *node, const int index) {
+int Tree::buildTree(const std::string& formula, Node *node, int index) {
 
     std::string symbol = nextSymbol(formula,index);
 
-    if(symbol.empty())
-        return index;
-
     node -> setName(symbol);
 
-    if( isOperator1el(symbol) ) {
-        node -> setLeft(new Node());
+    if( operators.find(symbol) != operators.end() ) {
 
-        return buildTree(formula,node->getLeft(), index + symbol.length() + 1);
-    }
-    if ( isOperator2el(symbol) ) {
-        node -> setLeft(new Node());
-        node -> setRight(new Node());
-
-        return buildTree(formula,node->getRight(), buildTree(formula, node->getLeft(), index+ symbol.length() + 1));
-    }
-    if( isVar(symbol) && variables.find(symbol) == variables.end() ) {
+        for(int i=0;i < operators.at(symbol) ;++i) {
+            node->addChild(new Node());
+            index = buildTree(formula,node->getChildAt(i),index + symbol.length() + 1);
+        }
+    }else if( isVar(symbol) && variables.find(symbol) == variables.end() ) {
         variables.insert(std::make_pair(symbol,0) );
     }
 
-    return index + symbol.length() + 1;
+    return index;
 }
 
 void Tree::printTree() {
@@ -58,8 +50,9 @@ void Tree::printTree(Node *cur) {
     if (cur != nullptr) {
         std::cout<< cur -> getName()<< " ";
 
-        printTree(cur -> getLeft());
-        printTree(cur -> getRight());
+        for (int i=0;i<cur->numberOfChildren();++i) {
+            printTree( cur->getChildAt(i) );
+        }
     }
 }
 
@@ -86,9 +79,9 @@ void Tree::printResult(const std::string& values) {
             var.second = stringToInt(value);
         }
 
-        if(index == values.length() + 1) {
+        if(index == values.length() + 1 || (values.empty() && variables.empty())) {
             std::cout << compute(root) << std::endl;
-        }else {
+        }else{
             std::cout << "Wrong number of values" << std::endl;
         }
     }
@@ -99,22 +92,22 @@ double Tree::compute(Node *cur) {
     std::string symbol = cur->getName();
 
     if (symbol == "+") {
-        return compute(cur->getLeft() ) + compute(cur->getRight() );
+        return compute(cur->getChildAt(0) ) + compute(cur->getChildAt(1) );
     }
     if (symbol == "-") {
-        return compute(cur->getLeft() ) - compute(cur->getRight() );
+        return compute(cur->getChildAt(0) ) - compute(cur->getChildAt(1) );
     }
     if (symbol == "*") {
-        return compute(cur->getLeft() ) * compute(cur->getRight() );
+        return compute(cur->getChildAt(0) ) * compute(cur->getChildAt(1) );
     }
     if (symbol == "/") {
-        return compute(cur->getLeft() ) / compute(cur->getRight() );
+        return compute(cur->getChildAt(0) ) / compute(cur->getChildAt(1) );
     }
     if (symbol == "sin") {
-        return sin( compute(cur->getLeft()) );
+        return sin( compute(cur->getChildAt(0) ));
     }
     if (symbol == "cos") {
-        return cos( compute(cur->getLeft()) );
+        return cos( compute(cur->getChildAt(0)) );
     }
 
     if(variables.find(symbol) != variables.end()) {
@@ -122,26 +115,6 @@ double Tree::compute(Node *cur) {
     }
 
     return stringToInt(symbol);
-}
-
-bool Tree::isOperator2el(const std::string& symbol) {
-
-    for(const std::string & i : operators2el) {
-        if (symbol == i) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool Tree::isOperator1el(const std::string& symbol) {
-
-    for(const std::string & i : operators1el) {
-        if (symbol == i) {
-            return true;
-        }
-    }
-    return false;
 }
 
 bool Tree::isVar(const std::string &formula) {
@@ -156,7 +129,7 @@ bool Tree::isVar(const std::string &formula) {
 }
 
 std::string Tree::nextSymbol(const std::string& formula, int index) {
-    if (index >= formula.size()) return "";
+    if (index >= formula.size()) return INITIAL_NODE_VALUE;
 
     size_t nextSpace = formula.find(' ', index);
 

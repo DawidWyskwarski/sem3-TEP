@@ -5,33 +5,33 @@
 #include "Node.h"
 
 Node::Node(const std::string constrName)
-: name(constrName), left(nullptr), right(nullptr){}
+: name(constrName){}
 
 Node::Node()
-: name(INITIAL_NODE_VALUE), left(nullptr), right(nullptr){}
+: name(INITIAL_NODE_VALUE){}
 
 std::string Node::getName() {
     return name;
 }
+
 void Node::setName(const std::string newName) {
     name = newName;
 }
 
-Node* Node::getLeft() const {
-    return left;
-}
-void Node::setLeft(Node *newLeft) {
-    left = newLeft;
+void Node::addChild(Node* newNode) {
+    children.push_back(newNode);
 }
 
-Node* Node::getRight() const {
-    return right;
+Node* Node::getChildAt(int index) {
+    return children.at(index);
 }
-void Node::setRight(Node *newRight) {
-    right = newRight;
+
+int Node::numberOfChildren() {
+    return children.size();
 }
 
 Node::~Node() {
-    delete left;
-    delete right;
+    for (auto child: children) {
+        delete child;
+    }
 }

@@ -65,11 +65,11 @@ int main() {
 
     Tree tree;
 
-    tree.buildTree("cos * a + b c");
+    tree.buildTree("+ + + 2 2 2 2");
 
     tree.printTree();
     tree.printVars();
-    tree.printResult("87 90 9");
+    tree.printResult("");
 
     return 0;
 }

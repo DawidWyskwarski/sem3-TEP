@@ -6,8 +6,8 @@
 #include <map>
 
 #include "Node.h"
-const std::string operators2el[] = {"+", "-", "*", "/"};
-const std::string operators1el[] = {"sin", "cos"};
+
+const std::map<std::string,int> operators = {{"+",2},{"-",2},{"*",2},{"/",2},{"sin",1},{"cos",1}};
 
 class Tree {
 public:
@@ -27,9 +27,6 @@ private:
     void printTree(Node* cur);
     int buildTree(const std::string& formula, Node* node, int index);
     double compute(Node* cur);
-
-    bool isOperator2el(const std::string& symbol);
-    bool isOperator1el(const std::string& symbol);
 
     bool isVar(const std::string& formula);
 

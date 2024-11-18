@@ -5,30 +5,29 @@
 #ifndef NODE_H
 #define NODE_H
 #include <string>
+#include <vector>
 
 #define INITIAL_NODE_VALUE "1"
 
 class Node {
 
 public:
-    Node(std::string constrName);
+    Node(const std::string constrName);
     Node();
 
     std::string getName();
     void setName(std::string newName);
 
-    Node* getLeft() const;
-    Node* getRight() const;
+    Node* getChildAt(int index);
+    void addChild(Node* newNode);
 
-    void setLeft(Node* newLeft);
-    void setRight(Node* newRight);
+    int numberOfChildren();
 
     ~Node();
 
 private:
     std::string name;
-    Node* left;
-    Node* right;
+    std::vector<Node*> children;
 };
 
 
