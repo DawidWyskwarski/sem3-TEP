@@ -14,15 +14,18 @@ Tree::~Tree() {
     delete root;
 }
 
-void Tree::buildTree(const std::string &formula) {
+void Tree::buildTree(std::string &formula) {
 
     delete root;
     root = new Node();
-    buildTree(formula,root,0);
+    int index = 0;
+    removeLeadingSpaces(formula);
+    removeTrailingSpaces(formula);
+    buildTree(formula,root,index);
 
 }
 
-int Tree::buildTree(const std::string& formula, Node *node, int index) {
+void Tree::buildTree(const std::string& formula, Node *node,int& index) {
 
     std::string symbol = nextSymbol(formula,index);
 
@@ -32,13 +35,13 @@ int Tree::buildTree(const std::string& formula, Node *node, int index) {
 
         for(int i=0;i < operators.at(symbol) ;++i) {
             node->addChild(new Node());
-            index = buildTree(formula,node->getChildAt(i),index + symbol.length() + 1);
+
+            index+=1;
+            buildTree(formula,node->getChildAt(i),index);
         }
     }else if( isVar(symbol) && variables.find(symbol) == variables.end() ) {
         variables.insert(std::make_pair(symbol,0) );
     }
-
-    return index;
 }
 
 void Tree::printTree() {
@@ -66,25 +69,34 @@ void Tree::printVars() {
     std::cout<< std::endl;
 }
 
-void Tree::printResult(const std::string& values) {
+void Tree::printResult(std::string& values) {
     if (root == nullptr) {
         std::cout << "The tree is empty!" << std::endl;
-    }else {
-
-        int index = 0;
-        for (auto& var: variables) {
-            std::string value = nextSymbol(values,index);
-            index += value.length() + 1;
-
-            var.second = stringToInt(value);
-        }
-
-        if(index == values.length() + 1 || (values.empty() && variables.empty())) {
-            std::cout << compute(root) << std::endl;
-        }else{
-            std::cout << "Wrong number of values" << std::endl;
-        }
+        return;
     }
+
+    int index = 0;
+
+    removeLeadingSpaces(values);
+    removeTrailingSpaces(values);
+
+    for (auto& var: variables) {
+        if (index >= values.length()) {
+            std::cout<<"Wrong number of values"<< std::endl;
+            return;
+        }
+
+        std::string value = nextSymbol(values,index);
+
+        var.second = stringToInt(value);
+    }
+
+    if(index == values.length()) {
+        std::cout << compute(root) << std::endl;
+        return;
+    }
+
+    std::cout << "Wrong number of values" << std::endl;
 }
 
 double Tree::compute(Node *cur) {
@@ -128,15 +140,39 @@ bool Tree::isVar(const std::string &formula) {
     return false;
 }
 
-std::string Tree::nextSymbol(const std::string& formula, int index) {
-    if (index >= formula.size()) return INITIAL_NODE_VALUE;
+std::string Tree::nextSymbol(const std::string& formula, int& index) {
+    if (index >= formula.length())
+        return INITIAL_NODE_VALUE;
 
-    size_t nextSpace = formula.find(' ', index);
-
-    if (nextSpace == std::string::npos) {
-        return formula.substr(index);
+    while (index < formula.length() && formula[index] == ' ') {
+        ++index;
     }
-    return formula.substr(index, nextSpace - index);
+
+    if (index >= formula.length())
+        return INITIAL_NODE_VALUE;
+
+    bool invalidChar = false;
+    std::string symbol;
+
+    for (; index < formula.length() && formula[index] != ' '; ++index) {
+        char c = formula[index];
+
+        if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') )) {
+            invalidChar = true;
+        }
+
+        symbol += c;
+    }
+
+    if(operators.find(symbol) != operators.end()) {
+        return symbol;
+    }
+
+    if (invalidChar) {
+        return nextSymbol(formula, index);
+    }
+
+    return symbol;
 }
 
 int Tree::stringToInt(const std::string &number) {
@@ -149,4 +185,24 @@ int Tree::stringToInt(const std::string &number) {
     }
 
     return result;
+}
+
+void Tree::removeLeadingSpaces(std::string& str) {
+    size_t startPos = 0;
+
+    while (startPos < str.length() && str[startPos] == ' ') {
+        ++startPos;
+    }
+
+    str.erase(0, startPos);
+}
+
+void Tree::removeTrailingSpaces(std::string& str) {
+    size_t endPos = str.length();
+
+    while (endPos > 0 && str[endPos - 1] == ' ') {
+        --endPos;
+    }
+
+    str.erase(endPos);
 }

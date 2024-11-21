@@ -64,12 +64,15 @@ int main() {
     }*/
 
     Tree tree;
-
-    tree.buildTree("+ + + 2 2 2 2");
+    std::string formula = "+ + + a b";
+    tree.buildTree(formula);
 
     tree.printTree();
     tree.printVars();
-    tree.printResult("");
+    std::string values = "1  2";
+    tree.printResult(values);
+
+
 
     return 0;
 }

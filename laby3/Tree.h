@@ -13,10 +13,10 @@ class Tree {
 public:
     Tree();
 
-    void buildTree(const std::string& formula);
+    void buildTree(std::string& formula);
     void printTree();
     void printVars();
-    void printResult(const std::string& values);
+    void printResult(std::string& values);
 
     ~Tree();
 
@@ -25,12 +25,15 @@ private:
     std::map<std::string,int> variables;
 
     void printTree(Node* cur);
-    int buildTree(const std::string& formula, Node* node, int index);
+    void buildTree(const std::string& formula, Node* node, int& index);
     double compute(Node* cur);
 
     bool isVar(const std::string& formula);
 
-    std::string nextSymbol(const std::string& formula, int index);
+    std::string nextSymbol(const std::string& formula, int& index);
+
+    void removeLeadingSpaces(std::string& str);
+    void removeTrailingSpaces(std::string& str);
 
     int stringToInt(const std::string& number);
 };
