@@ -8,21 +8,43 @@
 #include <iostream>
 
 Tree::Tree()
-: root() {}
+: root(nullptr) {}
+
+Tree::Tree(const Tree& tree): root(nullptr) {
+    if(tree.root != nullptr) {
+        root = new Node(*tree.root);
+    }
+    variables = tree.variables;
+}
 
 Tree::~Tree() {
     delete root;
 }
 
+Tree& Tree::operator=(Tree tree) {
+    if(this == &tree) return *this;
+
+    std::swap(root,tree.root);
+    std::swap(variables,tree.variables);
+
+    return *this;
+}
+
 void Tree::buildTree(std::string &formula) {
 
     delete root;
+    variables.clear();
+
     root = new Node();
+
     int index = 0;
-    removeLeadingSpaces(formula);
-    removeTrailingSpaces(formula);
     buildTree(formula,root,index);
 
+    if(index != formula.length()) {
+        std::cout << WRONG_FORMULA << std::endl;
+        printTree();
+        std::cout << INSTEAD << std::endl;
+    }
 }
 
 void Tree::buildTree(const std::string& formula, Node *node,int& index) {
@@ -45,8 +67,12 @@ void Tree::buildTree(const std::string& formula, Node *node,int& index) {
 }
 
 void Tree::printTree() {
+    if(root == nullptr) {
+        std::cout << EMPTY_TREE;
+    }
+
     printTree(root);
-    std::cout<< std::endl;
+    std::cout << std::endl;
 }
 
 void Tree::printTree(Node *cur) {
@@ -61,7 +87,7 @@ void Tree::printTree(Node *cur) {
 
 void Tree::printVars() {
     if(variables.empty())
-        std::cout<<"There are no variables!";
+        std::cout<< NO_VARS;
 
     for (const auto& var: variables) {
         std::cout << var.first << " ";
@@ -71,18 +97,15 @@ void Tree::printVars() {
 
 void Tree::printResult(std::string& values) {
     if (root == nullptr) {
-        std::cout << "The tree is empty!" << std::endl;
+        std::cout << EMPTY_TREE << std::endl;
         return;
     }
 
     int index = 0;
 
-    removeLeadingSpaces(values);
-    removeTrailingSpaces(values);
-
     for (auto& var: variables) {
         if (index >= values.length()) {
-            std::cout<<"Wrong number of values"<< std::endl;
+            std::cout<< WRONG_VARS << std::endl;
             return;
         }
 
@@ -93,10 +116,9 @@ void Tree::printResult(std::string& values) {
 
     if(index == values.length()) {
         std::cout << compute(root) << std::endl;
-        return;
+    }else {
+        std::cout << WRONG_VARS << std::endl;
     }
-
-    std::cout << "Wrong number of values" << std::endl;
 }
 
 double Tree::compute(Node *cur) {
@@ -128,6 +150,40 @@ double Tree::compute(Node *cur) {
 
     return stringToInt(symbol);
 }
+
+Tree Tree::operator+(Tree& tree) {
+    Tree result = *this;
+
+    int aaa = root->numberOfChildren();
+
+    if(aaa == 0) {
+        result.root = tree.root;
+    }else {
+
+        Node* cur = result.root;
+
+        while(cur->getChildAt(0)->numberOfChildren() > 0) {
+            cur = cur->getChildAt(0);
+        }
+
+        if (isVar(cur->getChildAt(0)->getName() )) {
+            result.variables.erase( result.variables.find(cur->getChildAt(0)->getName()) );
+        }
+
+        Node* newRoot = new Node(*tree.root);
+        cur->addBegining(newRoot);
+    }
+
+    for (const auto& [key, value] : tree.variables) {
+        if (result.variables.find(key) == result.variables.end()) {
+            result.variables[key] = value;
+        }
+    }
+
+    return result;
+}
+
+
 
 bool Tree::isVar(const std::string &formula) {
 
@@ -169,6 +225,7 @@ std::string Tree::nextSymbol(const std::string& formula, int& index) {
     }
 
     if (invalidChar) {
+        std::cout << symbol << WRONG_VAR_NAME << std::endl;
         return nextSymbol(formula, index);
     }
 
@@ -185,24 +242,4 @@ int Tree::stringToInt(const std::string &number) {
     }
 
     return result;
-}
-
-void Tree::removeLeadingSpaces(std::string& str) {
-    size_t startPos = 0;
-
-    while (startPos < str.length() && str[startPos] == ' ') {
-        ++startPos;
-    }
-
-    str.erase(0, startPos);
-}
-
-void Tree::removeTrailingSpaces(std::string& str) {
-    size_t endPos = str.length();
-
-    while (endPos > 0 && str[endPos - 1] == ' ') {
-        --endPos;
-    }
-
-    str.erase(endPos);
 }

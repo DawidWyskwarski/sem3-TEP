@@ -7,16 +7,27 @@
 
 #include "Node.h"
 
+#define EMPTY_TREE "The tree is empty!"
+#define NO_VARS "There are no variables in the tree!"
+#define WRONG_VARS "Wrong number of values!"
+#define WRONG_VAR_NAME " includes invalid characters and will be skipped!"
+#define WRONG_FORMULA "Inputted formula had mistakes, will process:"
+#define INSTEAD "instead!"
+
 const std::map<std::string,int> operators = {{"+",2},{"-",2},{"*",2},{"/",2},{"sin",1},{"cos",1}};
 
 class Tree {
 public:
     Tree();
+    Tree(const Tree& tree);
+    Tree& operator=(Tree tree);
 
     void buildTree(std::string& formula);
     void printTree();
     void printVars();
     void printResult(std::string& values);
+    Tree operator+(Tree& tree);
+
 
     ~Tree();
 
@@ -31,9 +42,6 @@ private:
     bool isVar(const std::string& formula);
 
     std::string nextSymbol(const std::string& formula, int& index);
-
-    void removeLeadingSpaces(std::string& str);
-    void removeTrailingSpaces(std::string& str);
 
     int stringToInt(const std::string& number);
 };

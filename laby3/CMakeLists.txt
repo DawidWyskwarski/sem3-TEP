@@ -7,4 +7,6 @@ add_executable(laby3 main.cpp
         Tree.cpp
         Tree.h
         Node.cpp
-        Node.h)
+        Node.h
+        ConsoleUserInterface.cpp
+        ConsoleUserInterface.h)

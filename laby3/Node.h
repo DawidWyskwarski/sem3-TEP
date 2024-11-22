@@ -15,13 +15,19 @@ public:
     Node(const std::string constrName);
     Node();
 
+    Node(const Node& node);
+
+    Node& operator=(Node node);
+
     std::string getName();
     void setName(std::string newName);
 
     Node* getChildAt(int index);
+    void addBegining(Node* node);
     void addChild(Node* newNode);
 
     int numberOfChildren();
+
 
     ~Node();
 
