@@ -40,7 +40,7 @@ void Tree::buildTree(std::string &formula) {
     int index = 0;
     buildTree(formula,root,index);
 
-    if(index != formula.length()) {
+    if(index != formula.length() || formula.empty()) {
         std::cout << WRONG_FORMULA << std::endl;
         printTree();
         std::cout << INSTEAD << std::endl;
@@ -101,6 +101,13 @@ void Tree::printResult(std::string& values) {
         return;
     }
 
+    for(int i=0;i<values.length();++i) {
+        if( !( (values[i]>='0' && values[i]<='9') || values[i]==' ' )  ) {
+            std::cout<< WRONG_VARS_VALUES << std::endl;
+            return;
+        }
+    }
+
     int index = 0;
 
     for (auto& var: variables) {
@@ -152,12 +159,14 @@ double Tree::compute(Node *cur) {
 }
 
 Tree Tree::operator+(Tree& tree) {
+    if (root == nullptr) {
+        return tree;
+    }
+
     Tree result = *this;
 
-    int aaa = root->numberOfChildren();
-
-    if(aaa == 0) {
-        result.root = tree.root;
+    if(root->numberOfChildren() == 0) {
+        result = tree;
     }else {
 
         Node* cur = result.root;
@@ -171,7 +180,7 @@ Tree Tree::operator+(Tree& tree) {
         }
 
         Node* newRoot = new Node(*tree.root);
-        cur->addBegining(newRoot);
+        cur->addBeginning(newRoot);
     }
 
     for (const auto& [key, value] : tree.variables) {
@@ -182,8 +191,6 @@ Tree Tree::operator+(Tree& tree) {
 
     return result;
 }
-
-
 
 bool Tree::isVar(const std::string &formula) {
 

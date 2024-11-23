@@ -41,7 +41,7 @@ Node* Node::getChildAt(int index) {
     return children.at(index);
 }
 
-void Node::addBegining(Node *node) {
+void Node::addBeginning(Node *node) {
     delete children.at(0);
     children.erase(children.begin());
 

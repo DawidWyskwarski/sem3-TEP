@@ -15,6 +15,8 @@
 #define JOIN_OPERATOR "join"
 #define QUIT_OPERATOR "quit"
 #define INPUT_SIGN ">"
+#define OPERATION_ERROR "You've entered a wrong operation"
+#define JOINED "Joined tree: "
 
 class ConsoleUserInterface {
 public:

@@ -26,6 +26,7 @@ void ConsoleUserInterface::whichOperation(std::string& input) {
 
     std::string operation;
     std::string formula;
+    Tree tmp;
 
     const int pivotPoint = findFirstSpace(input);
 
@@ -52,18 +53,17 @@ void ConsoleUserInterface::whichOperation(std::string& input) {
         tree.printResult(formula);
     }
     else if (operation == JOIN_OPERATOR) {
-        Tree tmp;
         tmp.buildTree(formula);
 
         tree = tree + tmp;
 
-        std::cout << "Joined tree: " << std::endl;
+        std::cout << JOINED << std::endl;
         tree.printTree();
     }
     else if (operation == QUIT_OPERATOR) {
         input = QUIT_OPERATOR;
     }
-    else std::cout<<"You've entered a wrong operation" + operation<<std::endl;
+    else std::cout<< OPERATION_ERROR <<std::endl;
 }
 
 int ConsoleUserInterface::findFirstSpace(const std::string& input) {

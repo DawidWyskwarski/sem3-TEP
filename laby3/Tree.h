@@ -13,6 +13,7 @@
 #define WRONG_VAR_NAME " includes invalid characters and will be skipped!"
 #define WRONG_FORMULA "Inputted formula had mistakes, will process:"
 #define INSTEAD "instead!"
+#define WRONG_VARS_VALUES "One of the values is not a number!"
 
 const std::map<std::string,int> operators = {{"+",2},{"-",2},{"*",2},{"/",2},{"sin",1},{"cos",1}};
 

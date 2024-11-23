@@ -23,7 +23,7 @@ public:
     void setName(std::string newName);
 
     Node* getChildAt(int index);
-    void addBegining(Node* node);
+    void addBeginning(Node* node);
     void addChild(Node* newNode);
 
     int numberOfChildren();
