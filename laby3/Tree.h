@@ -28,7 +28,7 @@ public:
     void printVars();
     void printResult(std::string& values);
     Tree operator+(Tree& tree);
-
+    bool partialSwap(Tree& tree, const std::string& token);
 
     ~Tree();
 
@@ -39,6 +39,8 @@ private:
     void printTree(Node* cur);
     void buildTree(const std::string& formula, Node* node, int& index);
     double compute(Node* cur);
+
+    Node* findWithInChildren(const std::string& token);
 
     bool isVar(const std::string& formula);
 
