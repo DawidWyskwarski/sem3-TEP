@@ -70,8 +70,6 @@ void Tree::buildTree(const std::string& formula, Node *node,int& index) {
 
 bool Tree::partialSwap(Tree &tree, const std::string& token) {
 
-    //Jezus maria zajęlo mi to doslownie 5 minut
-    //Co ja robilem na tych zajęciach - fatalnie
     Node* t1 = this->findWithInChildren(token);
     Node* t2 = tree.findWithInChildren(token);
 
@@ -80,81 +78,12 @@ bool Tree::partialSwap(Tree &tree, const std::string& token) {
 
     std::swap(*t1,*t2);
     return true;
-
-    /*Node* t1 = this->findWithInChildren(token);
-    Node* t2 = tree.findWithInChildren(token);
-
-    if(operators.find(token) == operators.end() && t1 !=nullptr && t2 != nullptr)
-        return true;
-
-    if(root == nullptr || tree.root == nullptr) {
-        return false;
-    }
-
-    if(root->getName() == token && tree.root->getName() == token) {
-        std::swap(root,tree.root);
-        return true;
-    }
-
-
-    if(t1==nullptr && t2==nullptr)
-        return false;
-
-    if(tree.root->getName() == token && t1 != nullptr) {
-        for(int i=0;i<t1->numberOfChildren();++i) {
-            if(t1->getChildAt(i)->getName() == token) {
-                std::swap(*tree.root,*t1->getChildAt(i));
-            }
-        }
-        return true;
-    }
-    if(root->getName() == token && t2 != nullptr) {
-        for(int i=0;i<t2->numberOfChildren();++i) {
-            if(t2->getChildAt(i)->getName() == token) {
-                std::swap(*root,*t2->getChildAt(i));
-            }
-        }
-        return true;
-    }
-
-
-
-    for(int i=0;i<t1->numberOfChildren();++i) {
-
-        if(t1->getChildAt(i)->getName() == token) {
-
-            for(int j=0;j<t2->numberOfChildren();++j) {
-
-                if(t2->getChildAt(j)->getName() == token) {
-
-                    std::swap(*t1->getChildAt(i),*t2->getChildAt(j));
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-*/
 }
 
 Node* Tree::findWithInChildren(const std::string &token) {
 
     std::queue<Node*> queue;
     queue.push(root);
-
-    /*while(!queue.empty()) {
-
-        Node* cur = queue.front();
-        queue.pop();
-
-        for(int i=0;i<cur->numberOfChildren();++i) {
-            if(cur->getChildAt(i)->getName() == token) {
-                return cur;
-            }
-            queue.push( cur->getChildAt(i) );
-        }
-    }*/
 
     while(!queue.empty()) {
         Node* cur = queue.front();
