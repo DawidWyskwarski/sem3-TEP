@@ -1,0 +1,3 @@
+C:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby4/cmake-build-debug/CMakeFiles/laby4.dir
+C:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby4/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
