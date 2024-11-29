@@ -3,13 +3,17 @@ project(laby4)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(laby4 ConsoleUserInterface.h
-                     ConsoleUserInterface.cpp
-                     Node.h
-                     Node.cpp
-                     Tree.h
-                     Tree.cpp
-                     main.cpp)
+add_executable(laby4
+        ConsoleUserInterface.h
+        ConsoleUserInterface.cpp
+        Node.h
+        Node.cpp
+        Tree.h
+        Tree.cpp
+        main.cpp
+        Error.cpp
+        Error.h
+        Result.h)
 
 
 

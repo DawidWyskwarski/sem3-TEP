@@ -73,6 +73,12 @@ build CMakeFiles/laby4.dir/main.cpp.obj: CXX_COMPILER__laby4_unscanned_Debug C$:
   OBJECT_DIR = CMakeFiles\laby4.dir
   OBJECT_FILE_DIR = CMakeFiles\laby4.dir
 
+build CMakeFiles/laby4.dir/Error.cpp.obj: CXX_COMPILER__laby4_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby4/Error.cpp || cmake_object_order_depends_target_laby4
+  DEP_FILE = CMakeFiles\laby4.dir\Error.cpp.obj.d
+  FLAGS = -g -std=gnu++11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\laby4.dir
+  OBJECT_FILE_DIR = CMakeFiles\laby4.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target laby4
@@ -81,7 +87,7 @@ build CMakeFiles/laby4.dir/main.cpp.obj: CXX_COMPILER__laby4_unscanned_Debug C$:
 #############################################
 # Link the executable laby4.exe
 
-build laby4.exe: CXX_EXECUTABLE_LINKER__laby4_Debug CMakeFiles/laby4.dir/ConsoleUserInterface.cpp.obj CMakeFiles/laby4.dir/Node.cpp.obj CMakeFiles/laby4.dir/Tree.cpp.obj CMakeFiles/laby4.dir/main.cpp.obj
+build laby4.exe: CXX_EXECUTABLE_LINKER__laby4_Debug CMakeFiles/laby4.dir/ConsoleUserInterface.cpp.obj CMakeFiles/laby4.dir/Node.cpp.obj CMakeFiles/laby4.dir/Tree.cpp.obj CMakeFiles/laby4.dir/main.cpp.obj CMakeFiles/laby4.dir/Error.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\laby4.dir
