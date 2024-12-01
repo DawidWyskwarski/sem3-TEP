@@ -100,4 +100,88 @@ T Result<T, E>::getValue() {
     return *value;
 }
 
+
+template<typename E>
+class Result<void,E> {
+public:
+    Result();
+    Result(E *error);
+    Result(std::vector<E*>& err);
+    Result(const Result<void, E>& other);
+
+    ~Result();
+
+    static Result<void, E> ok();
+    static Result<void, E> fail(E* error);
+    static Result<void, E> fail(std::vector<E*>& err);
+
+    Result<void, E>& operator=(Result<void, E> other);
+
+    bool isSuccess();
+
+    std::vector<E*>& getErrors();
+
+private:
+    std::vector<E*> errors;
+};
+
+template<typename E>
+Result<void, E>::Result() {}
+
+template<typename E>
+Result<void, E>::Result(E *error) {
+    errors.push_back(error);
+}
+
+template<typename E>
+Result<void, E>::Result(std::vector<E *> &err) {
+    errors = err;
+}
+
+template<typename E>
+Result<void, E>::Result(const Result<void, E> &other):errors(other.errors) {}
+
+
+template<typename E>
+Result<void, E>::~Result() {
+    for(int i=0;i<errors.size();++i) {
+        delete errors[i];
+    }
+}
+
+template<typename E>
+Result<void, E> Result<void, E>::ok() {
+    return Result();
+}
+
+template<typename E>
+Result<void, E> Result<void, E>::fail(E *error) {
+    return Result(error);
+}
+
+template<typename E>
+Result<void, E> Result<void, E>::fail(std::vector<E *> &err) {
+    return Result(err);
+}
+
+template<typename E>
+Result<void, E> &Result<void, E>::operator=(Result<void, E> other) {
+    if (this==&other) return *this;
+
+    std::swap(errors,other.errors);
+
+    return *this;
+}
+
+template<typename E>
+bool Result<void, E>::isSuccess() {
+    return errors.empty();
+}
+
+template<typename E>
+std::vector<E *> &Result<void, E>::getErrors() {
+    return errors;
+}
+
+
 #endif //RESULT_H
