@@ -44,7 +44,12 @@ template<typename T, typename E>
 Result<T, E>::Result(std::vector<E *> err):value(nullptr) { errors = err; }
 
 template<typename T, typename E>
-Result<T, E>::Result(const Result<T, E> &other):value(other.value), errors(other.errors) {}
+Result<T, E>::Result(const Result<T, E>& other)
+:value(other.value ? new T(*other.value) : nullptr) {
+    for(int i=0;i<other.errors.size();++i) {
+        errors.push_back(new E( *other.errors[i] ));
+    }
+}
 
 
 template<typename T, typename E>
@@ -139,7 +144,11 @@ Result<void, E>::Result(std::vector<E *> &err) {
 }
 
 template<typename E>
-Result<void, E>::Result(const Result<void, E> &other):errors(other.errors) {}
+Result<void, E>::Result(const Result<void, E> &other) {
+    for(int i=0;i<other.errors.size();++i) {
+        errors.push_back(new E( *other.errors[i] ));
+    }
+}
 
 
 template<typename E>

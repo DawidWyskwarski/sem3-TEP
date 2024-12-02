@@ -8,7 +8,7 @@
 
 
 class Error {
-
+public:
     Error(const std::string& error);
 
     std::string getErrorMessage();
