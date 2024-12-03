@@ -145,6 +145,7 @@ Result<void, E>::Result(std::vector<E *> &err) {
 
 template<typename E>
 Result<void, E>::Result(const Result<void, E> &other) {
+
     for(int i=0;i<other.errors.size();++i) {
         errors.push_back(new E( *other.errors[i] ));
     }
@@ -156,6 +157,7 @@ Result<void, E>::~Result() {
     for(int i=0;i<errors.size();++i) {
         delete errors[i];
     }
+    errors.clear();
 }
 
 template<typename E>

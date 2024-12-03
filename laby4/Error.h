@@ -10,10 +10,13 @@
 class Error {
 public:
     Error(const std::string& error);
+    Error(const Error& other);
+
+    Error& operator=(Error other);
 
     std::string getErrorMessage();
 
-
+    ~Error();
 private:
     std::string errorMessage;
 };

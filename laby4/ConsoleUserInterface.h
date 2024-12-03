@@ -5,6 +5,8 @@
 #ifndef CONSOLEUSERINTERFACE_H
 #define CONSOLEUSERINTERFACE_H
 #include "Tree.h"
+#include "Result.h"
+#include "Error.h"
 
 #define START_MESSAGE "Enter the operation you want to perform:\nenter <formula> - builds tree based on the formula\nvars - displays variables in the tree\nprint - prints tree\ncomp <var0> <var1> ... <varN> - computes the tree\njoin <formula> - joins the the current tree with a new one\nquit - quits session"
 

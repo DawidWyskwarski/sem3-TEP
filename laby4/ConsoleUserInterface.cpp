@@ -41,16 +41,38 @@ void ConsoleUserInterface::whichOperation(std::string& input) {
     }
 
     if(operation == PRINT_OPERATOR && formula.empty() ) {
-        tree.printTree();
+        Result<std::string,Error> result = tree.printTree();
+
+        if(result.isSuccess()) {
+            std::cout << result.getValue() << std::endl;
+        }else {
+            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+        }
     }
     else if (operation == VARS_OPERATOR && formula.empty() ) {
-        tree.printVars();
+        Result<std::string,Error> result = tree.printVars();
+
+        if(result.isSuccess()) {
+            std::cout << result.getValue() << std::endl;
+        }else {
+            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+        }
     }
     else if (operation == ENTER_OPERATOR) {
-        tree.buildTree(formula);
+        Result<void,Error> result = tree.buildTree(formula);
+
+        if(!result.isSuccess()) {
+            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+        }
     }
     else if (operation == COMP_OPERATOR) {
-        tree.printResult(formula);
+        Result<double,Error> result = tree.printResult(formula);
+
+        if(result.isSuccess()) {
+            std::cout << result.getValue() << std::endl;
+        }else {
+            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+        }
     }
     else if (operation == JOIN_OPERATOR) {
         tmp.buildTree(formula);

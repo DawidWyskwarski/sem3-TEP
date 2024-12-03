@@ -6,6 +6,8 @@
 #include <map>
 
 #include "Node.h"
+#include "Result.h"
+#include "Error.h"
 
 #define EMPTY_TREE "The tree is empty!"
 #define NO_VARS "There are no variables in the tree!"
@@ -23,10 +25,10 @@ public:
     Tree(const Tree& tree);
     Tree& operator=(Tree tree);
 
-    void buildTree(std::string& formula);
-    void printTree();
-    void printVars();
-    void printResult(std::string& values);
+    Result<void,Error> buildTree(std::string& formula);
+    Result<std::string,Error> printTree();
+    Result<std::string,Error> printVars();
+    Result<double,Error> printResult(std::string& values);
     Tree operator+(Tree& tree);
     bool partialSwap(Tree& tree, const std::string& token);
 
@@ -36,15 +38,15 @@ private:
     Node* root;
     std::map<std::string,int> variables;
 
-    void printTree(Node* cur);
-    void buildTree(const std::string& formula, Node* node, int& index);
+    void printTree(Node* cur,std::string& result);
+    Result<void,Error> buildTree(const std::string& formula, Node* node, int& index);
     double compute(Node* cur);
 
     Node* findWithInChildren(const std::string& token);
 
     bool isVar(const std::string& formula);
 
-    std::string nextSymbol(const std::string& formula, int& index);
+    Result<std::string,Error> nextSymbol(const std::string& formula, int& index);
 
     int stringToInt(const std::string& number);
 };

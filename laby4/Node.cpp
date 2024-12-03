@@ -56,4 +56,5 @@ Node::~Node() {
     for (auto child: children) {
         delete child;
     }
+    children.clear();
 }

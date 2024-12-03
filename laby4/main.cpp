@@ -1,11 +1,11 @@
 #include <iostream>
 
 #include "ConsoleUserInterface.h"
-#include "Tree.h"
-#include "Result.h"
-#include "Error.h"
 
 int main() {
+
+    ConsoleUserInterface cui;
+    cui.startSession();
 
     return 0;
 }

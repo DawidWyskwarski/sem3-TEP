@@ -32,7 +32,7 @@ Tree& Tree::operator=(Tree tree) {
     return *this;
 }
 
-void Tree::buildTree(std::string &formula) {
+Result<void,Error> Tree::buildTree(std::string &formula) {
 
     delete root;
     variables.clear();
@@ -40,18 +40,40 @@ void Tree::buildTree(std::string &formula) {
     root = new Node();
 
     int index = 0;
-    buildTree(formula,root,index);
+    Result<void,Error> res = buildTree(formula,root,index);
 
-    if(index != formula.length() || formula.empty()) {
-        std::cout << WRONG_FORMULA << std::endl;
-        printTree();
-        std::cout << INSTEAD << std::endl;
+    if(! res.isSuccess() ) {
+        delete root;
+        root = nullptr;
+
+        return res;
     }
+
+    if(index < formula.length()) {
+        delete root;
+        root = nullptr;
+
+        return Result<void,Error>::fail(new Error("formula was to long"));
+    }
+
+    return Result<void,Error>::ok();
 }
 
-void Tree::buildTree(const std::string& formula, Node *node,int& index) {
+Result<void,Error> Tree::buildTree(const std::string& formula, Node *node,int& index) {
 
-    std::string symbol = nextSymbol(formula,index);
+    Result<std::string,Error> res = nextSymbol(formula,index);
+
+    if(!res.isSuccess()) {
+        //TODO find better way to do this
+
+        std::vector<Error*> errors;
+        for (auto* error : res.getErrors()) {
+            errors.push_back(new Error(*error));
+        }
+        return Result<void, Error>::fail(errors);
+    }
+
+    std::string symbol = res.getValue();
 
     node -> setName(symbol);
 
@@ -61,85 +83,60 @@ void Tree::buildTree(const std::string& formula, Node *node,int& index) {
             node->addChild(new Node());
 
             index+=1;
-            buildTree(formula,node->getChildAt(i),index);
+
+            Result<void,Error> res2 = buildTree(formula,node->getChildAt(i),index);
+
+            if(!res2.isSuccess()) {
+                return res2;
+            }
         }
     }else if( isVar(symbol) && variables.find(symbol) == variables.end() ) {
         variables.insert(std::make_pair(symbol,0) );
     }
+
+    return Result<void,Error>::ok();
 }
 
-bool Tree::partialSwap(Tree &tree, const std::string& token) {
-
-    Node* t1 = this->findWithInChildren(token);
-    Node* t2 = tree.findWithInChildren(token);
-
-    if(t1 == nullptr || t2 == nullptr)
-        return false;
-
-    std::swap(*t1,*t2);
-    return true;
-}
-
-Node* Tree::findWithInChildren(const std::string &token) {
-
-    std::queue<Node*> queue;
-    queue.push(root);
-
-    while(!queue.empty()) {
-        Node* cur = queue.front();
-        queue.pop();
-
-        if(cur->getName() == token) {
-            return cur;
-        }
-
-        for(int i=0;i<cur->numberOfChildren();++i) {
-            queue.push(cur->getChildAt(i));
-        }
-    }
-
-    return nullptr;
-}
-
-void Tree::printTree() {
+Result<std::string,Error> Tree::printTree() {
     if(root == nullptr) {
-        std::cout << EMPTY_TREE;
+        return Result<std::string,Error>::fail(new Error(EMPTY_TREE));
     }
 
-    printTree(root);
-    std::cout << std::endl;
+    std::string tree;
+    printTree(root,tree);
+
+    return Result<std::string,Error>::ok( tree );
 }
 
-void Tree::printTree(Node *cur) {
+void Tree::printTree(Node *cur, std::string& result)  {
     if (cur != nullptr) {
-        std::cout<< cur -> getName()<< " ";
+        result += cur->getName() + " ";
 
         for (int i=0;i<cur->numberOfChildren();++i) {
-            printTree( cur->getChildAt(i) );
+            printTree(cur->getChildAt(i), result);
         }
     }
 }
 
-void Tree::printVars() {
+Result<std::string,Error> Tree::printVars() {
     if(variables.empty())
-        std::cout<< NO_VARS;
+        return Result<std::string,Error>::fail(new Error(NO_VARS) );
 
+    std::string result;
     for (const auto& var: variables) {
-        std::cout << var.first << " ";
+        result += var.first + " ";
     }
-    std::cout<< std::endl;
+    return Result<std::string,Error>::ok( result );
 }
 
-void Tree::printResult(std::string& values) {
+Result<double,Error> Tree::printResult(std::string& values) {
     if (root == nullptr) {
-        std::cout << EMPTY_TREE << std::endl;
-        return;
+        return Result<double,Error>::fail(new Error(EMPTY_TREE) );
     }
 
     for(int i=0;i<values.length();++i) {
         if( !( (values[i]>='0' && values[i]<='9') || values[i]==' ' )  ) {
-            std::cout<< WRONG_VARS_VALUES << std::endl;
-            return;
+            return Result<double,Error>::fail(new Error(WRONG_VARS_VALUES));
         }
     }
 
@@ -147,20 +144,19 @@ void Tree::printResult(std::string& values) {
 
     for (auto& var: variables) {
         if (index >= values.length()) {
-            std::cout<< WRONG_VARS << std::endl;
-            return;
+            return Result<double,Error>::fail(new Error(WRONG_VARS) );
         }
 
-        std::string value = nextSymbol(values,index);
+        std::string value = nextSymbol(values,index).getValue();
 
         var.second = stringToInt(value);
     }
 
     if(index == values.length()) {
-        std::cout << compute(root) << std::endl;
-    }else {
-        std::cout << WRONG_VARS << std::endl;
+        return Result<double,Error>::ok(compute(root));
     }
+
+    return Result<double,Error>::fail(new Error(WRONG_VARS));
 }
 
 double Tree::compute(Node *cur) {
@@ -238,16 +234,16 @@ bool Tree::isVar(const std::string &formula) {
     return false;
 }
 
-std::string Tree::nextSymbol(const std::string& formula, int& index) {
+Result<std::string,Error> Tree::nextSymbol(const std::string& formula, int& index) {
     if (index >= formula.length())
-        return INITIAL_NODE_VALUE;
+        return Result<std::string,Error>::fail(new Error("formula was too short"));
 
     while (index < formula.length() && formula[index] == ' ') {
         ++index;
     }
 
     if (index >= formula.length())
-        return INITIAL_NODE_VALUE;
+        return Result<std::string,Error>::fail(new Error("formula was too short"));
 
     bool invalidChar = false;
     std::string symbol;
@@ -263,15 +259,14 @@ std::string Tree::nextSymbol(const std::string& formula, int& index) {
     }
 
     if(operators.find(symbol) != operators.end()) {
-        return symbol;
+        return Result<std::string,Error>::ok( symbol );
     }
 
     if (invalidChar) {
-        std::cout << symbol << WRONG_VAR_NAME << std::endl;
-        return nextSymbol(formula, index);
+        return Result<std::string,Error>::fail(new Error(symbol + WRONG_VAR_NAME));
     }
 
-    return symbol;
+    return Result<std::string,Error>::ok( symbol );
 }
 
 int Tree::stringToInt(const std::string &number) {
@@ -284,4 +279,37 @@ int Tree::stringToInt(const std::string &number) {
     }
 
     return result;
+}
+
+bool Tree::partialSwap(Tree &tree, const std::string& token) {
+
+    Node* t1 = this->findWithInChildren(token);
+    Node* t2 = tree.findWithInChildren(token);
+
+    if(t1 == nullptr || t2 == nullptr)
+        return false;
+
+    std::swap(*t1,*t2);
+    return true;
+}
+
+Node* Tree::findWithInChildren(const std::string &token) {
+
+    std::queue<Node*> queue;
+    queue.push(root);
+
+    while(!queue.empty()) {
+        Node* cur = queue.front();
+        queue.pop();
+
+        if(cur->getName() == token) {
+            return cur;
+        }
+
+        for(int i=0;i<cur->numberOfChildren();++i) {
+            queue.push(cur->getChildAt(i));
+        }
+    }
+
+    return nullptr;
 }
