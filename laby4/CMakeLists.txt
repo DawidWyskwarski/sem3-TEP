@@ -13,7 +13,9 @@ add_executable(laby4
         main.cpp
         Error.cpp
         Error.h
-        Result.h)
+        Result.h
+        SaveResult.h
+)
 
 
 
