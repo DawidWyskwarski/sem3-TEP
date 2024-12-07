@@ -46,7 +46,7 @@ void ConsoleUserInterface::whichOperation(std::string& input) {
         if(result.isSuccess()) {
             std::cout << result.getValue() << std::endl;
         }else {
-            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+            printTheErrors(result.getErrors());
         }
     }
     else if (operation == VARS_OPERATOR && formula.empty() ) {
@@ -55,14 +55,14 @@ void ConsoleUserInterface::whichOperation(std::string& input) {
         if(result.isSuccess()) {
             std::cout << result.getValue() << std::endl;
         }else {
-            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+            printTheErrors(result.getErrors());
         }
     }
     else if (operation == ENTER_OPERATOR) {
         Result<void,Error> result = tree.buildTree(formula);
 
         if(!result.isSuccess()) {
-            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+            printTheErrors(result.getErrors());
         }
     }
     else if (operation == COMP_OPERATOR) {
@@ -71,16 +71,27 @@ void ConsoleUserInterface::whichOperation(std::string& input) {
         if(result.isSuccess()) {
             std::cout << result.getValue() << std::endl;
         }else {
-            std::cout << result.getErrors()[0]->getErrorMessage() << std::endl;
+            printTheErrors(result.getErrors());
         }
     }
     else if (operation == JOIN_OPERATOR) {
-        tmp.buildTree(formula);
+        Result<void,Error> resBuild = tmp.buildTree(formula);
 
-        tree = tree + tmp;
+        if( resBuild.isSuccess() ) {
+            Result<Tree,Error> result = tree + tmp;
 
-        std::cout << JOINED << std::endl;
-        tree.printTree();
+            if(result.isSuccess()) {
+                tree = result.getValue();
+
+                std::cout << JOINED << std::endl;
+                std::cout << tree.printTree().getValue() << std::endl;
+            }else {
+                printTheErrors(result.getErrors());
+            }
+
+        }else {
+            printTheErrors(resBuild.getErrors());
+        }
     }
     else if (operation == QUIT_OPERATOR) {
         input = QUIT_OPERATOR;
@@ -115,4 +126,10 @@ void ConsoleUserInterface::removeTrailingSpaces(std::string& str) {
     }
 
     str.erase(endPos);
+}
+
+void ConsoleUserInterface::printTheErrors(const std::vector<Error *>& errors) {
+    for(Error* err : errors) {
+        std::cout << err->getErrorMessage() << std::endl;
+    }
 }

@@ -140,7 +140,9 @@ Result<void, E>::Result(E *error) {
 
 template<typename E>
 Result<void, E>::Result(std::vector<E *> &err) {
-    errors = err;
+    for(int i=0;i<err.size();++i) {
+        errors.push_back(new E(err[i]->getErrorMessage()));
+    }
 }
 
 template<typename E>

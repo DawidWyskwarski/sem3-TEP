@@ -32,6 +32,8 @@ private:
     void removeTrailingSpaces(std::string& str);
     void removeLeadingSpaces(std::string& str);
 
+    void printTheErrors(const std::vector<Error*>& errors);
+
     Tree tree;
 };
 

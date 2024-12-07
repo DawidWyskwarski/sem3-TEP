@@ -46,8 +46,8 @@ void testSaveResultWithTreeErrors() {
 
 int main() {
 
-    //ConsoleUserInterface cui;
-    //cui.startSession();
+    ConsoleUserInterface cui;
+    cui.startSession();
 
     testSaveResultWithErrors();
     testSaveResultWithSuccess();

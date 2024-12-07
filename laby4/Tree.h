@@ -29,7 +29,7 @@ public:
     Result<std::string,Error> printTree();
     Result<std::string,Error> printVars();
     Result<double,Error> printResult(std::string& values);
-    Tree operator+(Tree& tree);
+    Result<Tree,Error> operator+(Tree& tree);
     bool partialSwap(Tree& tree, const std::string& token);
 
     ~Tree();

@@ -64,13 +64,7 @@ Result<void,Error> Tree::buildTree(const std::string& formula, Node *node,int& i
     Result<std::string,Error> res = nextSymbol(formula,index);
 
     if(!res.isSuccess()) {
-        //TODO find better way to do this
-
-        std::vector<Error*> errors;
-        for (auto* error : res.getErrors()) {
-            errors.push_back(new Error(*error));
-        }
-        return Result<void, Error>::fail(errors);
+        return Result<void, Error>::fail(res.getErrors());
     }
 
     std::string symbol = res.getValue();
@@ -189,9 +183,9 @@ double Tree::compute(Node *cur) {
     return stringToInt(symbol);
 }
 
-Tree Tree::operator+(Tree& tree) {
+Result<Tree,Error> Tree::operator+(Tree& tree) {
     if (root == nullptr) {
-        return tree;
+        return Result<Tree,Error>::fail(new Error( EMPTY_TREE ));
     }
 
     Tree result = *this;
@@ -220,7 +214,7 @@ Tree Tree::operator+(Tree& tree) {
         }
     }
 
-    return result;
+    return Result<Tree,Error>::ok( result );
 }
 
 bool Tree::isVar(const std::string &formula) {

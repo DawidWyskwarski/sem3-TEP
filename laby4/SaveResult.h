@@ -14,6 +14,7 @@
 template<typename T>
 class SaveResult {
 public:
+    SaveResult();
     SaveResult(const std::string& file);
 
     void save(Result<T,Error>& result);
@@ -21,6 +22,9 @@ public:
 private:
     std::string file;
 };
+
+template<typename T>
+SaveResult<T>::SaveResult():file("result") {}
 
 template<typename T>
 SaveResult<T>::SaveResult(const std::string &file):file(file) {};
