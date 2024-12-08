@@ -53,7 +53,7 @@ Result<void,Error> Tree::buildTree(std::string &formula) {
         delete root;
         root = nullptr;
 
-        return Result<void,Error>::fail(new Error("formula was to long"));
+        return Result<void,Error>::fail(new Error(TOO_LONG));
     }
 
     return Result<void,Error>::ok();
@@ -230,14 +230,14 @@ bool Tree::isVar(const std::string &formula) {
 
 Result<std::string,Error> Tree::nextSymbol(const std::string& formula, int& index) {
     if (index >= formula.length())
-        return Result<std::string,Error>::fail(new Error("formula was too short"));
+        return Result<std::string,Error>::fail(new Error(TOO_SHORT));
 
     while (index < formula.length() && formula[index] == ' ') {
         ++index;
     }
 
     if (index >= formula.length())
-        return Result<std::string,Error>::fail(new Error("formula was too short"));
+        return Result<std::string,Error>::fail(new Error(TOO_SHORT));
 
     bool invalidChar = false;
     std::string symbol;

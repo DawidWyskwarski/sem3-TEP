@@ -16,6 +16,8 @@
 #define WRONG_FORMULA "Inputted formula had mistakes, will process:"
 #define INSTEAD "instead!"
 #define WRONG_VARS_VALUES "One of the values is not a number!"
+#define TOO_LONG "The formula was too long"
+#define TOO_SHORT "The formula was too short"
 
 const std::map<std::string,int> operators = {{"+",2},{"-",2},{"*",2},{"/",2},{"sin",1},{"cos",1}};
 
