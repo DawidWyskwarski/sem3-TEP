@@ -46,13 +46,17 @@ void testSaveResultWithTreeErrors() {
 
 int main() {
 
-    ConsoleUserInterface cui;
-    cui.startSession();
+    //ConsoleUserInterface cui;
+    //cui.startSession();
 
-    testSaveResultWithErrors();
+    /*testSaveResultWithErrors();
     testSaveResultWithSuccess();
     testSaveResultWithTree();
-    testSaveResultWithTreeErrors();
+    testSaveResultWithTreeErrors();*/
+
+    Result<int,Error>r1 = Result<int,Error>::ok(10);
+    Result<Result<int,Error>,Error> r ;//::ok(Result<int,Error>::ok(7));
+
 
     return 0;
 }

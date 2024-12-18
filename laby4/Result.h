@@ -196,5 +196,9 @@ std::vector<E *> &Result<void, E>::getErrors() {
     return errors;
 }
 
+template<typename T,typename E, typename Ee>
+class Result<Result<T,E>,Ee> {
+    Result();
+};
 
 #endif //RESULT_H
