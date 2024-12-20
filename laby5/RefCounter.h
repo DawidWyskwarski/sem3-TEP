@@ -8,7 +8,7 @@
 class RefCounter
 {
 public:
-    RefCounter() {}
+    RefCounter():count(0) {}
 
     int add() {
         return ++count;

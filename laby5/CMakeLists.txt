@@ -3,6 +3,15 @@ project(laby5)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(laby5 main.cpp
+add_executable(laby5
+        RefCounter.h
         MySmartPointer.h
-        RefCounter.h)
+        Node.h
+        Node.cpp
+        Tree.h
+        Tree.cpp
+        Error.cpp
+        Error.h
+        Result.h
+        main.cpp
+)

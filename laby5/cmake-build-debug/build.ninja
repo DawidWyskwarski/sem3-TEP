@@ -49,6 +49,24 @@ cmake_ninja_workdir = C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby5/cmak
 
 build cmake_object_order_depends_target_laby5: phony || .
 
+build CMakeFiles/laby5.dir/Node.cpp.obj: CXX_COMPILER__laby5_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby5/Node.cpp || cmake_object_order_depends_target_laby5
+  DEP_FILE = CMakeFiles\laby5.dir\Node.cpp.obj.d
+  FLAGS = -g -std=gnu++11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\laby5.dir
+  OBJECT_FILE_DIR = CMakeFiles\laby5.dir
+
+build CMakeFiles/laby5.dir/Tree.cpp.obj: CXX_COMPILER__laby5_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby5/Tree.cpp || cmake_object_order_depends_target_laby5
+  DEP_FILE = CMakeFiles\laby5.dir\Tree.cpp.obj.d
+  FLAGS = -g -std=gnu++11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\laby5.dir
+  OBJECT_FILE_DIR = CMakeFiles\laby5.dir
+
+build CMakeFiles/laby5.dir/Error.cpp.obj: CXX_COMPILER__laby5_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby5/Error.cpp || cmake_object_order_depends_target_laby5
+  DEP_FILE = CMakeFiles\laby5.dir\Error.cpp.obj.d
+  FLAGS = -g -std=gnu++11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\laby5.dir
+  OBJECT_FILE_DIR = CMakeFiles\laby5.dir
+
 build CMakeFiles/laby5.dir/main.cpp.obj: CXX_COMPILER__laby5_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/laby5/main.cpp || cmake_object_order_depends_target_laby5
   DEP_FILE = CMakeFiles\laby5.dir\main.cpp.obj.d
   FLAGS = -g -std=gnu++11 -fdiagnostics-color=always
@@ -63,7 +81,7 @@ build CMakeFiles/laby5.dir/main.cpp.obj: CXX_COMPILER__laby5_unscanned_Debug C$:
 #############################################
 # Link the executable laby5.exe
 
-build laby5.exe: CXX_EXECUTABLE_LINKER__laby5_Debug CMakeFiles/laby5.dir/main.cpp.obj
+build laby5.exe: CXX_EXECUTABLE_LINKER__laby5_Debug CMakeFiles/laby5.dir/Node.cpp.obj CMakeFiles/laby5.dir/Tree.cpp.obj CMakeFiles/laby5.dir/Error.cpp.obj CMakeFiles/laby5.dir/main.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\laby5.dir
