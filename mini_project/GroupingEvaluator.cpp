@@ -1,71 +1,57 @@
 #include "GroupingEvaluator.h"
 
-using namespace NGroupingChallenge;
+using namespace GroupingChallenge;
 
-CGroupingEvaluator::CGroupingEvaluator(int iNumberOfGroups, const vector<CPoint>& vPoints)
-	: i_number_of_groups(iNumberOfGroups), v_points(vPoints)
-{
+GroupingEvaluator::GroupingEvaluator(int numberOfGroups, const vector<Point>& points)
+	: numberOfGroups(numberOfGroups), points(points)
+{}
 
-}
+double GroupingEvaluator::evaluate(const int* solution) const{
+	bool error = !solution || points.empty();
 
-double CGroupingEvaluator::dEvaluate(const int* piSolution) const
-{
-	bool b_error = !piSolution || v_points.empty();
+	double distance;
+	double distanceSum = 0;
 
-	double d_distance;
-	double d_distance_sum = 0;
+	for (size_t i = 0; i + 1 < points.size() && !error; i++){
+		if (solution[i] >= getLowerBound() && solution[i] <= getUpperBound()){
+			for (size_t j = i + 1; j < points.size(); j++){
+				if (solution[i] == solution[j]){
+					distance = points[i].calculateDistance(points[j]);
 
-	for (size_t i = 0; i + 1 < v_points.size() && !b_error; i++)
-	{
-		if (piSolution[i] >= iGetLowerBound() && piSolution[i] <= iGetUpperBound())
-		{
-			for (size_t j = i + 1; j < v_points.size(); j++)
-			{
-				if (piSolution[i] == piSolution[j])
-				{
-					d_distance = v_points[i].dCalculateDistance(v_points[j]);
-
-					if (d_distance >= 0)
-					{
-						d_distance_sum += 2.0 * v_points[i].dCalculateDistance(v_points[j]);
+					if (distance >= 0){
+						distanceSum += 2.0 * points[i].calculateDistance(points[j]);
 					}
-					else
-					{
-						b_error = true;
+					else{
+						error = true;
 					}
 				}
 			}
-		}
-		else
-		{
-			b_error = true;
+		}else{
+			error = true;
 		}
 	}
 
-	if (b_error)
-	{
-		return d_WRONG_VALUE;
+	if (error){
+		return WRONG_VALUE;
 	}
 
-	return d_distance_sum;
+	return distanceSum;
 }
 
-double CGroupingEvaluator::dEvaluate(const vector<int>* pvSolution) const
-{
-	if (!pvSolution)
-	{
-		return d_WRONG_VALUE;
+double GroupingEvaluator::evaluate(const vector<int>* solution) const{
+
+	if (!solution){
+		return WRONG_VALUE;
 	}
 
-	return dEvaluate(*pvSolution);
+	return evaluate(*solution);
 }
 
-double CGroupingEvaluator::dEvaluate(const vector<int>& vSolution) const
-{
-	if (vSolution.size() != v_points.size())
-	{
-		return d_WRONG_VALUE;
+double GroupingEvaluator::evaluate(const vector<int>& solution) const {
+
+	if (solution.size() != points.size()){
+		return WRONG_VALUE;
 	}
 
-	return dEvaluate(vSolution.data());
+	return evaluate(solution.data());
 }

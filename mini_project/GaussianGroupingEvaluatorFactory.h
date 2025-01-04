@@ -9,58 +9,58 @@
 
 using namespace std;
 
-namespace NGroupingChallenge
+namespace GroupingChallenge
 {
-	class CDimension
+	class Dimension
 	{
 	public:
-		CDimension(double dMeanMin, double dMeanMax, double dStandardDeviationMin, double dStandardDeviationMax, mt19937& cRandomEngine);
+		Dimension(double meanMin, double meanMax, double standardDeviationMin, double standardDeviationMax, mt19937& randomEngine);
 
-		double dGenerateRandomMean();
-		double dGenerateRandomStandardDeviation();
+		double generateRandomMean();
+		double generateRandomStandardDeviation();
 
 	private:
-		const double d_DEFAULT_STANDARD_DEVIATION_VALUE = 1.0;
+		const double DEFAULT_STANDARD_DEVIATION_VALUE = 1.0;
 
-		uniform_real_distribution<double> c_mean_uniform_distribution;
-		uniform_real_distribution<double> c_standard_deviation_uniform_distribution;
-		mt19937& c_random_engine;
+		uniform_real_distribution<double> meanUniformDistribution;
+		uniform_real_distribution<double> standardDeviationUniformDistribution;
+		mt19937& randomEngine;
 	};
 
-	class CGaussianDistribution
+	class GaussianDistribution
 	{
 	public:
-		CGaussianDistribution(double dMean, double dStandardDeviation, mt19937& cRandomEngine);
+		GaussianDistribution(double mean, double standardDeviation, mt19937& randomEngine);
 
-		double dGenerateRandomNumber();
+		double generateRandomNumber();
 
 	private:
-		normal_distribution<double> c_normal_distribution;
-		mt19937& c_random_engine;
+		normal_distribution<double> normalDistribution;
+		mt19937& randomEngine;
 	};
 
-	class CGaussianGroupingEvaluatorFactory
+	class GaussianGroupingEvaluatorFactory
 	{
 	public:
-		CGaussianGroupingEvaluatorFactory(int iNumberOfGroups, int iNumberOfPoints);
+		GaussianGroupingEvaluatorFactory(int numberOfGroups, int numberOfPoints);
 
-		CGaussianGroupingEvaluatorFactory& cAddDimension(double dMeanMin, double dMeanMax, double dStandardDeviationMin, double dStandardDeviationMax);
+		GaussianGroupingEvaluatorFactory& addDimension(double meanMin, double meanMax, double standardDeviationMin, double standardDeviationMax);
 
-		CGroupingEvaluator* pcCreateEvaluator();
-		CGroupingEvaluator* pcCreateEvaluator(unsigned int iSeed);
+		GroupingEvaluator* createEvaluator();
+		GroupingEvaluator* createEvaluator(unsigned int seed);
 
 	private:
-		const int i_NUMBER_OF_GROUPS_MIN_VALUE = 1;
-		const int i_NUMBER_OF_POINTS_MIN_VALUE = 1;
+		const int NUMBER_OF_GROUPS_MIN_VALUE = 1;
+		const int NUMBER_OF_POINTS_MIN_VALUE = 1;
 
-		vector<CGaussianDistribution>* pv_create_gaussian_distributions();
-		vector<CPoint>* pv_create_points(vector<CGaussianDistribution>& vGaussianDistributions);
+		vector<GaussianDistribution>* createGaussianDistributions();
+		vector<Point>* createPoints(vector<GaussianDistribution>& gaussianDistributions);
 
-		int i_number_of_groups;
-		int i_number_of_points;
+		int numberOfGroups;
+		int numberOfPoints;
 
-		vector<CDimension> v_dimensions;
-		mt19937 c_random_engine;
+		vector<Dimension> dimensions;
+		mt19937 randomEngine;
 	};
 }
 

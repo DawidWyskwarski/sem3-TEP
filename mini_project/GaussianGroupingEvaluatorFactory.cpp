@@ -1,110 +1,99 @@
 #include "GaussianGroupingEvaluatorFactory.h"
 
-using namespace NGroupingChallenge;
+using namespace GroupingChallenge;
 
-CDimension::CDimension(double dMeanMin, double dMeanMax, double dStandardDeviationMin, double dStandardDeviationMax, mt19937 &cRandomEngine)
-	: c_mean_uniform_distribution(min(dMeanMin, dMeanMax), max(dMeanMin, dMeanMax)), 
-	c_standard_deviation_uniform_distribution(min(dStandardDeviationMin, dStandardDeviationMax), max(dStandardDeviationMin, dStandardDeviationMax)),
-	c_random_engine(cRandomEngine)
-{
+Dimension::Dimension(double meanMin, double meanMax, double standardDeviationMin, double standardDeviationMax, mt19937 &randomEngine)
+	: meanUniformDistribution(min(meanMin, meanMax), max(meanMin, meanMax)),
+	standardDeviationUniformDistribution(min(standardDeviationMin, standardDeviationMax), max(standardDeviationMin, standardDeviationMax)),
+	randomEngine(randomEngine)
+{}
 
+double Dimension::generateRandomMean(){
+	return meanUniformDistribution(randomEngine);
 }
 
-double CDimension::dGenerateRandomMean()
-{
-	return c_mean_uniform_distribution(c_random_engine);
-}
+double Dimension::generateRandomStandardDeviation(){
 
-double CDimension::dGenerateRandomStandardDeviation()
-{
-	double d_standard_deviation = c_standard_deviation_uniform_distribution(c_random_engine);
+	double standardDeviation = standardDeviationUniformDistribution(randomEngine);
 
-	if (d_standard_deviation <= 0)
+	if (standardDeviation <= 0)
 	{
-		d_standard_deviation = d_DEFAULT_STANDARD_DEVIATION_VALUE;
+		standardDeviation = DEFAULT_STANDARD_DEVIATION_VALUE;
 	}
 
-	return d_standard_deviation;
+	return standardDeviation;
 }
 
-CGaussianDistribution::CGaussianDistribution(double dMean, double dStandardDeviation, mt19937& cRandomEngine)
-	: c_normal_distribution(dMean, dStandardDeviation), c_random_engine(cRandomEngine)
-{
+GaussianDistribution::GaussianDistribution(double mean, double standardDeviation, mt19937& randomEngine)
+	: normalDistribution(mean, standardDeviation), randomEngine(randomEngine)
+{}
 
+double GaussianDistribution::generateRandomNumber(){
+	return normalDistribution(randomEngine);
 }
 
-double CGaussianDistribution::dGenerateRandomNumber()
-{
-	return c_normal_distribution(c_random_engine);
-}
+GaussianGroupingEvaluatorFactory::GaussianGroupingEvaluatorFactory(int numberOfGroups, int numberOfPoints)
+	: numberOfGroups(max(numberOfGroups, NUMBER_OF_GROUPS_MIN_VALUE)), numberOfPoints(max(numberOfPoints, NUMBER_OF_POINTS_MIN_VALUE))
+{}
 
-CGaussianGroupingEvaluatorFactory::CGaussianGroupingEvaluatorFactory(int iNumberOfGroups, int iNumberOfPoints)
-	: i_number_of_groups(max(iNumberOfGroups, i_NUMBER_OF_GROUPS_MIN_VALUE)), i_number_of_points(max(iNumberOfPoints, i_NUMBER_OF_GROUPS_MIN_VALUE))
-{
-
-}
-
-CGaussianGroupingEvaluatorFactory& CGaussianGroupingEvaluatorFactory::cAddDimension(double dMeanMin, double dMeanMax, double dStandardDeviationMin, double dStandardDeviationMax)
-{
-	v_dimensions.push_back(CDimension(dMeanMin, dMeanMax, dStandardDeviationMin, dStandardDeviationMax, c_random_engine));
+GaussianGroupingEvaluatorFactory& GaussianGroupingEvaluatorFactory::addDimension(double meanMin, double meanMax, double standardDeviationMin, double standardDeviationMax){
+	dimensions.push_back(Dimension(meanMin, meanMax, standardDeviationMin, standardDeviationMax, randomEngine));
 
 	return *this;
 }
 
-CGroupingEvaluator* CGaussianGroupingEvaluatorFactory::pcCreateEvaluator()
-{
-	random_device c_seed_generator;
+GroupingEvaluator* GaussianGroupingEvaluatorFactory::createEvaluator(){
+	random_device seedGenerator;
 
-	return pcCreateEvaluator(c_seed_generator());
+	return createEvaluator(seedGenerator());
 }
 
-CGroupingEvaluator* CGaussianGroupingEvaluatorFactory::pcCreateEvaluator(unsigned int iSeed)
-{
-	c_random_engine.seed(iSeed);
+GroupingEvaluator* GaussianGroupingEvaluatorFactory::createEvaluator(unsigned int seed){
+	randomEngine.seed(seed);
 
-	vector<CGaussianDistribution>* pv_gaussian_distributions = pv_create_gaussian_distributions();
-	vector<CPoint>* pv_points = pv_create_points(*pv_gaussian_distributions);
+	vector<GaussianDistribution>* gaussianDistributions = createGaussianDistributions();
+	vector<Point>* points = createPoints(*gaussianDistributions);
 
-	CGroupingEvaluator* pc_evaluator = new CGroupingEvaluator(i_number_of_groups, *pv_points);
+	GroupingEvaluator* evaluator = new GroupingEvaluator(numberOfGroups, *points);
 
-	delete pv_gaussian_distributions;
-	delete pv_points;
+	delete gaussianDistributions;
+	delete points;
 
-	return pc_evaluator;
+	return evaluator;
 }
 
 
-vector<CGaussianDistribution>* CGaussianGroupingEvaluatorFactory::pv_create_gaussian_distributions()
-{
-	vector<CGaussianDistribution>* pv_gaussian_distributions = new vector<CGaussianDistribution>();
+vector<GaussianDistribution>* GaussianGroupingEvaluatorFactory::createGaussianDistributions(){
 
-	pv_gaussian_distributions->reserve(v_dimensions.size());
+	vector<GaussianDistribution>* gaussianDistributions = new vector<GaussianDistribution>();
 
-	for (size_t i = 0; i < v_dimensions.size(); i++)
+	gaussianDistributions->reserve(dimensions.size());
+
+	for (size_t i = 0; i < dimensions.size(); i++)
 	{
-		pv_gaussian_distributions->push_back(CGaussianDistribution(v_dimensions[i].dGenerateRandomMean(), v_dimensions[i].dGenerateRandomStandardDeviation(), c_random_engine));
+		gaussianDistributions->push_back(GaussianDistribution(dimensions[i].generateRandomMean(), dimensions[i].generateRandomStandardDeviation(), randomEngine));
 	}
 
-	return pv_gaussian_distributions;
+	return gaussianDistributions;
 }
 
-vector<CPoint>* CGaussianGroupingEvaluatorFactory::pv_create_points(vector<CGaussianDistribution>& vGaussianDistributions)
+vector<Point>* GaussianGroupingEvaluatorFactory::createPoints(vector<GaussianDistribution>& gaussianDistributions)
 {
-	vector<CPoint>* pv_points = new vector<CPoint>();
+	vector<Point>* points = new vector<Point>();
 
-	pv_points->reserve(i_number_of_points);
+	points->reserve(numberOfPoints);
 
-	for (int i = 0; i < i_number_of_points; i++)
+	for (int i = 0; i < numberOfPoints; i++)
 	{
-		CPoint c_point;
+		Point point;
 
-		for (size_t j = 0; j < vGaussianDistributions.size(); j++)
+		for (size_t j = 0; j < gaussianDistributions.size(); j++)
 		{
-			c_point.vAddCoordinate(vGaussianDistributions[j].dGenerateRandomNumber());
+			point.addCoordinate(gaussianDistributions[j].generateRandomNumber());
 		}
 
-		pv_points->push_back(c_point);
+		points->push_back(point);
 	}
 
-	return pv_points;
+	return points;
 }

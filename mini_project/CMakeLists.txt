@@ -3,7 +3,7 @@ project(mini_project)
 
 set(CMAKE_CXX_STANDARD 26)
 
-add_executable(mini_project main.cpp
+add_executable(mini_project
         GaussianGroupingEvaluatorFactory.cpp
         GroupingChallenge.cpp
         GroupingEvaluator.cpp

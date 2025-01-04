@@ -1,25 +1,25 @@
 #include "Point.h"
 
-using namespace NGroupingChallenge;
+using namespace GroupingChallenge;
 
-void CPoint::vAddCoordinate(double dCoordinate)
+void Point::addCoordinate(double coordinate)
 {
-	v_coordinates.push_back(dCoordinate);
+	coordinates.push_back(coordinate);
 }
 
-double CPoint::dCalculateDistance(const CPoint& cOther) const
+double Point::calculateDistance(const Point& other) const
 {
-	if (v_coordinates.empty() || v_coordinates.size() != cOther.v_coordinates.size())
+	if (coordinates.empty() || coordinates.size() != other.coordinates.size())
 	{
-		return d_WRONG_DISTANCE_VALUE;
+		return WRONG_DISTANCE_VALUE;
 	}
 
-	double d_squared_distance = 0;
+	double squaredDistance = 0;
 
-	for (size_t i = 0; i < v_coordinates.size(); i++)
+	for (size_t i = 0; i < coordinates.size(); i++)
 	{
-		d_squared_distance += (v_coordinates[i] - cOther.v_coordinates[i]) * (v_coordinates[i] - cOther.v_coordinates[i]);
+		squaredDistance += (coordinates[i] - other.coordinates[i]) * (coordinates[i] - other.coordinates[i]);
 	}
 
-	return sqrt(d_squared_distance);
+	return sqrt(squaredDistance);
 }

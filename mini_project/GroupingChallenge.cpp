@@ -2,36 +2,36 @@
 #include "GroupingEvaluator.h"
 #include "Optimizer.h"
 
-using namespace NGroupingChallenge;
+using namespace GroupingChallenge;
 
 int main()
 {
-	CGaussianGroupingEvaluatorFactory c_evaluator_factory(5, 100);
+	GaussianGroupingEvaluatorFactory evaluatorFactory(5, 100);
 
-	c_evaluator_factory
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0)
-		.cAddDimension(-100, 100, 1.0, 1.0);
+	evaluatorFactory
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0)
+		.addDimension(-100, 100, 1.0, 1.0);
 
-	CGroupingEvaluator* pc_evaluator = c_evaluator_factory.pcCreateEvaluator(0);
+	GroupingEvaluator* evaluator = evaluatorFactory.createEvaluator(0);
 
-	COptimizer c_optimizer(*pc_evaluator);
+	Optimizer optimizer(*evaluator);
 
-	c_optimizer.vInitialize();
+	optimizer.initialize();
 
 	for (int i = 0; i < 10; i++)
 	{
-		c_optimizer.vRunIteration();
+		optimizer.runIteration();
 	}
 
-	delete pc_evaluator;
+	delete evaluator;
 
 	return 0;
 }
