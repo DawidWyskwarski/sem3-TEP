@@ -27,7 +27,7 @@ public:
     Tree(const Tree& tree);
     Tree(Tree&& other);
     Tree& operator=(Tree tree);
-    Tree& operator=(Tree&& other);
+    Tree& operator=(Tree&& other) noexcept;
 
     Result<void,Error> buildTree(std::string& formula);
     Result<std::string,Error> printTree();

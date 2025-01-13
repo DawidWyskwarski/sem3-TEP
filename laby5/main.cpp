@@ -1,9 +1,10 @@
 #include <iostream>
 #include "MySmartPointer.h"
+#include "UniquePointer.h"
 
 int main() {
 
-    MySmartPointer<int> t1 = new int(10);
+    /*MySmartPointer<int> t1 = new int(10);
 
     std::cout << "Only t1:" << std::endl;
     std::cout << *t1 << " " << t1.getCounter() << std::endl;
@@ -35,6 +36,21 @@ int main() {
     std::cout << "t1:";
     std::cout << *t1 << " " << t1.getCounter() << std::endl;
 
-    // assigning it to   
+    */
+
+    UniquePointer<int> u1 = new int(10);
+    UniquePointer<int> u2 = new int(20);
+
+    std::cout << "u1: " << *u1 << std::endl;
+    std::cout << "u2: " << *u2 << std::endl;
+
+    u1 = u2;
+
+    std::cout << std::endl;
+
+    std::cout << "u1: " << *u1 << std::endl;
+    std::cout << "u2: " << *u2 << std::endl;
+
+
     return 0;
 }

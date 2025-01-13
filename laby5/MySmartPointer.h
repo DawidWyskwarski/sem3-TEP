@@ -24,6 +24,34 @@ public:
         counter -> add();
     }
 
+    MySmartPointer(MySmartPointer &&other) noexcept
+    {
+        pointer = other.pointer;
+        counter = other.counter;
+
+        other.pointer = nullptr;
+        other.counter = nullptr;
+    }
+
+    MySmartPointer& operator=(MySmartPointer&& other) noexcept {
+        if (this == &other) {
+            return *this;
+        }
+
+        if (counter->dec() == 0) {
+            delete pointer;
+            delete counter;
+        }
+
+        pointer = other.pointer;
+        counter = other.counter;
+
+        other.pointer = nullptr;
+        other.counter = nullptr;
+
+        return *this;
+    }
+
     ~MySmartPointer(){
         if (counter->dec() == 0){
             delete counter;

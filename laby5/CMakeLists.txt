@@ -14,4 +14,5 @@ add_executable(laby5
         Error.h
         Result.h
         main.cpp
+        UniquePointer.h
 )
