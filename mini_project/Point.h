@@ -6,18 +6,18 @@
 
 using namespace std;
 
-namespace GroupingChallenge
+namespace NGroupingChallenge
 {
-	class Point
+	class CPoint
 	{
 	public:
-		void addCoordinate(double coordinate);
-		double calculateDistance(const Point& other) const;
+		void vAddCoordinate(double dCoordinate);
+		double dCalculateDistance(const CPoint& cOther) const;
 
 	private:
-		const double WRONG_DISTANCE_VALUE = -1;
+		const double d_WRONG_DISTANCE_VALUE = -1;
 
-		vector<double> coordinates;
+		vector<double> v_coordinates;
 	};
 }
 

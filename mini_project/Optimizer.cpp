@@ -1,41 +1,41 @@
 #include "Optimizer.h"
 
-using namespace GroupingChallenge;
+using namespace NGroupingChallenge;
 
-Optimizer::Optimizer(GroupingEvaluator& evaluator)
-	: evaluator(evaluator)
+COptimizer::COptimizer(CGroupingEvaluator& cEvaluator)
+	: c_evaluator(cEvaluator)
 {
-	random_device seedGenerator;
-	randomEngine.seed( seedGenerator() );
+	random_device c_seed_generator;
+	c_random_engine.seed(c_seed_generator());
 }
 
-void Optimizer::initialize()
+void COptimizer::vInitialize()
 {
-	numeric_limits<double> doubleLimits;
-	currentBestFitness = doubleLimits.max();
+	numeric_limits<double> c_double_limits;
+	d_current_best_fitness = c_double_limits.max();
 
-	currentBest.clear();
-	currentBest.resize(evaluator.getNumberOfPoints() );
+	v_current_best.clear();
+	v_current_best.resize(c_evaluator.iGetNumberOfPoints());
 }
 
-void Optimizer::runIteration()
+void COptimizer::vRunIteration()
 {
-	vector<int> candidate( evaluator.getNumberOfPoints() );
+	vector<int> v_candidate(c_evaluator.iGetNumberOfPoints());
 
-	uniform_int_distribution<int> candidateDistribution(evaluator.getLowerBound(), evaluator.getUpperBound() );
+	uniform_int_distribution<int> c_candidate_distribution(c_evaluator.iGetLowerBound(), c_evaluator.iGetUpperBound());
 
-	for (size_t i = 0; i < candidate.size(); i++)
+	for (size_t i = 0; i < v_candidate.size(); i++)
 	{
-		candidate[i] = candidateDistribution(randomEngine);
+		v_candidate[i] = c_candidate_distribution(c_random_engine);
 	}
 
-	double candidateFitness = evaluator.evaluate( candidate );
+	double d_candidate_fitness = c_evaluator.dEvaluate(v_candidate);
 
-	if ( candidateFitness < currentBestFitness )
+	if (d_candidate_fitness < d_current_best_fitness)
 	{
-		currentBest = candidate;
-		currentBestFitness = candidateFitness;
+		v_current_best = v_candidate;
+		d_current_best_fitness = d_candidate_fitness;
 	}
 
-	cout << currentBestFitness << endl;
+	cout << d_current_best_fitness << endl;
 }

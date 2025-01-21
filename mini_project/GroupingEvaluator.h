@@ -7,27 +7,29 @@
 
 using namespace std;
 
-namespace GroupingChallenge
+namespace NGroupingChallenge
 {
-	class GroupingEvaluator
+	class CGroupingEvaluator
 	{
 	public:
-		GroupingEvaluator(int numberOfGroups, const vector<Point>& points);
+		CGroupingEvaluator(int iNumberOfGroups, const vector<CPoint>& vPoints);
 
-		double evaluate(const int* solution) const;
-		double evaluate(const vector<int>* solution) const;
-		double evaluate(const vector<int>& solution) const;
+		double dEvaluate(const int* piSolution) const;
+		double dEvaluate(const vector<int>* pvSolution) const;
+		double dEvaluate(const vector<int>& vSolution) const;
 
-		int getNumberOfPoints() const { return (int) points.size(); };
+		const vector<CPoint>& vGetPoints() const { return v_points; }
 
-		int getLowerBound() const { return 1; };
-		int getUpperBound() const { return numberOfGroups; }
+		int iGetNumberOfPoints() const { return (int)v_points.size(); };
+
+		int iGetLowerBound() const { return 1; };
+		int iGetUpperBound() const { return i_number_of_groups; }
 
 	private:
-		const double WRONG_VALUE = -1;
+		const double d_WRONG_VALUE = -1;
 
-		int numberOfGroups;
-		vector<Point> points;
+		int i_number_of_groups;
+		vector<CPoint> v_points;
 	};
 }
 

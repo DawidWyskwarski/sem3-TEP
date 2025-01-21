@@ -8,4 +8,6 @@ add_executable(mini_project
         GroupingChallenge.cpp
         GroupingEvaluator.cpp
         Optimizer.cpp
-        Point.cpp)
+        Point.cpp
+        Individual.cpp
+        Individual.h)

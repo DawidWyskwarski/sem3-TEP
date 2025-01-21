@@ -10,25 +10,25 @@
 
 using namespace std;
 
-namespace GroupingChallenge
+namespace NGroupingChallenge
 {
-	class Optimizer
+	class COptimizer
 	{
 	public:
-		Optimizer(GroupingEvaluator& evaluator);
+		COptimizer(CGroupingEvaluator& cEvaluator);
 
-		void initialize();
-		void runIteration();
+		void vInitialize();
+		void vRunIteration();
 
-		vector<int>* getCurrentBest() { return &currentBest; }
+		vector<int>* pvGetCurrentBest() { return &v_current_best; }
 
 	private:
-		GroupingEvaluator& evaluator;
+		CGroupingEvaluator& c_evaluator; 
 
-		double currentBestFitness;
-		vector<int> currentBest;
+		double d_current_best_fitness;
+		vector<int> v_current_best;
 
-		mt19937 randomEngine;
+		mt19937 c_random_engine;
 	};
 }
 

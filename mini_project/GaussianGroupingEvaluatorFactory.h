@@ -9,58 +9,71 @@
 
 using namespace std;
 
-namespace GroupingChallenge
+namespace NGroupingChallenge
 {
-	class Dimension
+	class CDimension
 	{
 	public:
-		Dimension(double meanMin, double meanMax, double standardDeviationMin, double standardDeviationMax, mt19937& randomEngine);
+		CDimension(double dMeanMin, double dMeanMax, double dStandardDeviationMin, double dStandardDeviationMax, mt19937& cRandomEngine);
 
-		double generateRandomMean();
-		double generateRandomStandardDeviation();
+		double dGenerateRandomMean();
+		double dGenerateRandomStandardDeviation();
 
 	private:
-		const double DEFAULT_STANDARD_DEVIATION_VALUE = 1.0;
+		const double d_DEFAULT_STANDARD_DEVIATION_VALUE = 1.0;
 
-		uniform_real_distribution<double> meanUniformDistribution;
-		uniform_real_distribution<double> standardDeviationUniformDistribution;
-		mt19937& randomEngine;
+		uniform_real_distribution<double> c_mean_uniform_distribution;
+		uniform_real_distribution<double> c_standard_deviation_uniform_distribution;
+		mt19937& c_random_engine;
 	};
 
-	class GaussianDistribution
+	class CUnivariateGaussianDistribution
 	{
 	public:
-		GaussianDistribution(double mean, double standardDeviation, mt19937& randomEngine);
+		CUnivariateGaussianDistribution(double dMean, double dStandardDeviation, mt19937& cRandomEngine);
 
-		double generateRandomNumber();
+		double dGenerateRandomNumber();
 
 	private:
-		normal_distribution<double> normalDistribution;
-		mt19937& randomEngine;
+		normal_distribution<double> c_normal_distribution;
+		mt19937& c_random_engine;
 	};
 
-	class GaussianGroupingEvaluatorFactory
+	class CMultivariateGaussianDistribution
 	{
 	public:
-		GaussianGroupingEvaluatorFactory(int numberOfGroups, int numberOfPoints);
+		CMultivariateGaussianDistribution(vector<CDimension>& vDimensions, mt19937& cRandomEngine);
 
-		GaussianGroupingEvaluatorFactory& addDimension(double meanMin, double meanMax, double standardDeviationMin, double standardDeviationMax);
-
-		GroupingEvaluator* createEvaluator();
-		GroupingEvaluator* createEvaluator(unsigned int seed);
+		CPoint cGenerateRandomPoint();
 
 	private:
-		const int NUMBER_OF_GROUPS_MIN_VALUE = 1;
-		const int NUMBER_OF_POINTS_MIN_VALUE = 1;
+		vector<CUnivariateGaussianDistribution> v_univariate_gaussian_distributions;
+	};
 
-		vector<GaussianDistribution>* createGaussianDistributions();
-		vector<Point>* createPoints(vector<GaussianDistribution>& gaussianDistributions);
+	class CGaussianGroupingEvaluatorFactory
+	{
+	public:
+		CGaussianGroupingEvaluatorFactory(int iNumberOfGroups, int iNumberOfPoints, int iNumberOfMultivariateGaussianDistributions);
 
-		int numberOfGroups;
-		int numberOfPoints;
+		CGaussianGroupingEvaluatorFactory& cAddDimension(double dMeanMin, double dMeanMax, double dStandardDeviationMin, double dStandardDeviationMax);
 
-		vector<Dimension> dimensions;
-		mt19937 randomEngine;
+		CGroupingEvaluator* pcCreateEvaluator();
+		CGroupingEvaluator* pcCreateEvaluator(unsigned int iSeed);
+
+	private:
+		const int i_NUMBER_OF_GROUPS_MIN_VALUE = 1;
+		const int i_NUMBER_OF_POINTS_MIN_VALUE = 1;
+		const int i_NUMBER_OF_MULTIVARIATE_GAUSSIAN_DISTRIBUTIONS_MIN_VALUE = 1;
+
+		vector<CMultivariateGaussianDistribution>* pv_create_multivariate_gaussian_distributions();
+		vector<CPoint>* pv_create_points(vector<CMultivariateGaussianDistribution>& vMultivariateGaussianDistributions);
+
+		int i_number_of_groups;
+		int i_number_of_points;
+		int i_number_of_multivariate_gaussian_distributions;
+
+		vector<CDimension> v_dimensions;
+		mt19937 c_random_engine;
 	};
 }
 
