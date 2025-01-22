@@ -10,4 +10,6 @@ add_executable(mini_project
         Optimizer.cpp
         Point.cpp
         Individual.cpp
-        Individual.h)
+        Individual.h
+        GeneticAlgorithm.cpp
+        GeneticAlgorithm.h)
