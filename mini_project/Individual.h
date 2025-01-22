@@ -23,9 +23,7 @@ public:
     ~Individual();
 
     double fitness(const NGroupingChallenge::CGroupingEvaluator &evaluator) const;
-
     void mutate(const double &mutationChance,const int &numberOfGroups);
-
     std::vector<Individual> cross(const Individual &partner, const double &crossingChance);
 
 private:

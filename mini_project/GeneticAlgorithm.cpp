@@ -8,7 +8,7 @@
 
 using namespace NGroupingChallenge;
 
-GeneticAlgorithm::GeneticAlgorithm(const int populationSize, const double crossingChance, const double mutationChance,CGroupingEvaluator& evaluator)
+GeneticAlgorithm::GeneticAlgorithm(const int populationSize, const double crossingChance, const double mutationChance, CGroupingEvaluator& evaluator)
 :populationSize(populationSize), crossingChance(crossingChance), mutationChance(mutationChance), bestFitness(DBL_MAX), evaluator(evaluator) { initializeThePopulation(); }
 
 GeneticAlgorithm::GeneticAlgorithm(const GeneticAlgorithm &other) = default;
@@ -62,5 +62,27 @@ void GeneticAlgorithm::initializeThePopulation() {
             individual[j] = candidateDistribution(gen);
         }
         population.emplace_back(individual);
+    }
+
+    findBest();
+}
+
+double GeneticAlgorithm::getBestFitness() const {
+    return bestFitness;
+}
+
+Individual GeneticAlgorithm::getBestIndividual() {
+    return bestIndividual;
+}
+
+void GeneticAlgorithm::findBest() {
+
+    for(int i=0;i<populationSize;++i) {
+        double currentFitness = population.at(i).fitness(evaluator);
+
+        if(currentFitness < bestFitness) {
+            bestFitness = currentFitness;
+            bestIndividual = population.at(i);
+        }
     }
 }
