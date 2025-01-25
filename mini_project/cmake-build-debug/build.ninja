@@ -79,6 +79,18 @@ build CMakeFiles/mini_project.dir/Point.cpp.obj: CXX_COMPILER__mini_project_unsc
   OBJECT_DIR = CMakeFiles\mini_project.dir
   OBJECT_FILE_DIR = CMakeFiles\mini_project.dir
 
+build CMakeFiles/mini_project.dir/Individual.cpp.obj: CXX_COMPILER__mini_project_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/mini_project/Individual.cpp || cmake_object_order_depends_target_mini_project
+  DEP_FILE = CMakeFiles\mini_project.dir\Individual.cpp.obj.d
+  FLAGS = -g -std=gnu++23 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\mini_project.dir
+  OBJECT_FILE_DIR = CMakeFiles\mini_project.dir
+
+build CMakeFiles/mini_project.dir/GeneticAlgorithm.cpp.obj: CXX_COMPILER__mini_project_unscanned_Debug C$:/Users/wyskw/OneDrive/Pulpit/studia/sem3/TEP/mini_project/GeneticAlgorithm.cpp || cmake_object_order_depends_target_mini_project
+  DEP_FILE = CMakeFiles\mini_project.dir\GeneticAlgorithm.cpp.obj.d
+  FLAGS = -g -std=gnu++23 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\mini_project.dir
+  OBJECT_FILE_DIR = CMakeFiles\mini_project.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target mini_project
@@ -87,7 +99,7 @@ build CMakeFiles/mini_project.dir/Point.cpp.obj: CXX_COMPILER__mini_project_unsc
 #############################################
 # Link the executable mini_project.exe
 
-build mini_project.exe: CXX_EXECUTABLE_LINKER__mini_project_Debug CMakeFiles/mini_project.dir/GaussianGroupingEvaluatorFactory.cpp.obj CMakeFiles/mini_project.dir/GroupingChallenge.cpp.obj CMakeFiles/mini_project.dir/GroupingEvaluator.cpp.obj CMakeFiles/mini_project.dir/Optimizer.cpp.obj CMakeFiles/mini_project.dir/Point.cpp.obj
+build mini_project.exe: CXX_EXECUTABLE_LINKER__mini_project_Debug CMakeFiles/mini_project.dir/GaussianGroupingEvaluatorFactory.cpp.obj CMakeFiles/mini_project.dir/GroupingChallenge.cpp.obj CMakeFiles/mini_project.dir/GroupingEvaluator.cpp.obj CMakeFiles/mini_project.dir/Optimizer.cpp.obj CMakeFiles/mini_project.dir/Point.cpp.obj CMakeFiles/mini_project.dir/Individual.cpp.obj CMakeFiles/mini_project.dir/GeneticAlgorithm.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\mini_project.dir

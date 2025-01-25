@@ -26,6 +26,8 @@ public:
     void mutate(const double &mutationChance,const int &numberOfGroups);
     std::vector<Individual> cross(const Individual &partner, const double &crossingChance);
 
+    string toString();
+
 private:
     std::vector<int> genotype;
 };

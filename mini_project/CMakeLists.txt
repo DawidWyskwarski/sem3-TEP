@@ -12,4 +12,5 @@ add_executable(mini_project
         Individual.cpp
         Individual.h
         GeneticAlgorithm.cpp
-        GeneticAlgorithm.h)
+        GeneticAlgorithm.h
+        SimulationParams.h)

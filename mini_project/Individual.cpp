@@ -4,6 +4,8 @@
 
 #include "Individual.h"
 
+#include <iostream>
+
 Individual::Individual() = default;
 
 Individual::Individual(const std::vector<int> &genes):genotype(genes) {}
@@ -45,40 +47,45 @@ void Individual::mutate(const double &mutationChance,const int &numberOfGroups) 
     }
 }
 
-std::vector<Individual> Individual::cross(const Individual &partner,const double &crossingChance) {
-
+std::vector<Individual> Individual::cross(const Individual &partner, const double &crossingChance) {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> crossDis(0.0,1.0);
+    std::uniform_real_distribution<> dis(0.0, 1.0);
+
     std::vector<Individual> children;
-    children.reserve(2);
 
-    if(crossDis(gen) > crossingChance || genotype.size() == 1) {
-        children.emplace_back(partner);
-        children.emplace_back(*this);
+    if (dis(gen) > crossingChance) {
+        children.push_back(*this);
+        children.push_back(partner);
+    } else {
 
-        return children;
+        const int n = genotype.size();
+
+        std::uniform_int_distribution<> cutPointDis(1, n - 1);
+        const int cutPoint = cutPointDis(gen);
+
+        std::vector<int> child1, child2;
+
+        child1.insert(child1.end(), genotype.begin(), genotype.begin() + cutPoint);
+        child1.insert(child1.end(), partner.genotype.begin() + cutPoint, partner.genotype.end());
+
+        child2.insert(child2.end(), partner.genotype.begin(), partner.genotype.begin() + cutPoint);
+        child2.insert(child2.end(), genotype.begin() + cutPoint, genotype.end());
+
+        children.emplace_back(child1);
+        children.emplace_back(child2);
     }
-
-    std::uniform_int_distribution<> groupDis( 1, genotype.size()-1 );
-
-    int pivot = groupDis(gen);
-
-    Individual child1;
-    Individual child2;
-
-    for(int i=0; i<pivot; ++i) {
-        child1.genotype.emplace_back( this->genotype.at(i) );
-        child2.genotype.emplace_back( partner.genotype.at(i) );
-    }
-
-    for(int i=pivot;i<genotype.size();++i) {
-        child1.genotype.emplace_back( partner.genotype.at(i) );
-        child2.genotype.emplace_back( this->genotype.at(i) );
-    }
-
-    children.emplace_back(child1);
-    children.emplace_back(child2);
 
     return children;
+}
+
+string Individual::toString() {
+
+    string result;
+
+    for(int i:genotype) {
+        result+= '0'+ i;
+    }
+
+    return result;
 }
