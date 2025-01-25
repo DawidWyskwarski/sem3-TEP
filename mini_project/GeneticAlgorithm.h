@@ -23,12 +23,14 @@ public:
 
     void runIteration();
 
-    double getBestFitness() const;
+    [[nodiscard]] double getBestFitness() const;
     Individual getBestIndividual();
 
 private:
     void initializeThePopulation();
     void findBest();
+
+    Individual chooseParent();
 
     int populationSize;
     double crossingChance;

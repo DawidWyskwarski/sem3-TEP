@@ -5,6 +5,9 @@
 #include "GeneticAlgorithm.h"
 
 #include <cfloat>
+#include <chrono>
+#include <iostream>
+#include <thread>
 
 using namespace NGroupingChallenge;
 
@@ -47,6 +50,37 @@ GeneticAlgorithm &GeneticAlgorithm::operator=(GeneticAlgorithm &&other) noexcept
 
 GeneticAlgorithm::~GeneticAlgorithm() = default;
 
+void GeneticAlgorithm::runIteration() {
+
+    vector<Individual> newPopulation;
+    newPopulation.reserve(populationSize);
+
+    int newPopulationSize = 0;
+
+    while(newPopulationSize < populationSize) {
+
+        Individual parent1 = chooseParent();
+        Individual parent2 = chooseParent();
+
+        vector<Individual> children = parent1.cross(parent2, crossingChance);
+
+        children.at(0).mutate(mutationChance, evaluator.iGetUpperBound());
+        children.at(1).mutate(mutationChance, evaluator.iGetUpperBound());
+
+        newPopulation.emplace_back(children.at(0));
+
+        if(newPopulationSize+1<populationSize) {
+            newPopulation.emplace_back(children.at(1));
+        }
+
+        newPopulationSize+=2;
+    }
+
+    population = std::move(newPopulation);
+
+    findBest();
+}
+
 void GeneticAlgorithm::initializeThePopulation() {
 
     std::random_device rd;
@@ -85,4 +119,22 @@ void GeneticAlgorithm::findBest() {
             bestIndividual = population.at(i);
         }
     }
+}
+
+Individual GeneticAlgorithm::chooseParent() {
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> index(0,populationSize-1);
+
+    int index1 = index(gen);
+    int index2 = index(gen);
+
+    Individual parent1 = population.at(index1);
+    Individual parent2 = population.at(index2);
+
+    if ( parent1.fitness(evaluator) < parent2.fitness(evaluator) )
+        return parent1;
+
+    return parent2;
 }
