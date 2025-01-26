@@ -12,13 +12,28 @@
 using namespace NGroupingChallenge;
 
 GeneticAlgorithm::GeneticAlgorithm(const int populationSize, const double crossingChance, const double mutationChance, CGroupingEvaluator& evaluator)
-:populationSize(populationSize), crossingChance(crossingChance), mutationChance(mutationChance), bestFitness(DBL_MAX), evaluator(evaluator) { initializeThePopulation(); }
+:populationSize(populationSize), crossingChance(crossingChance), mutationChance(mutationChance), bestFitness(DBL_MAX), evaluator(evaluator) {
 
-GeneticAlgorithm::GeneticAlgorithm(const GeneticAlgorithm &other) = default;
+    std::random_device rd;
+    gen.seed(rd());
+
+    initializeThePopulation();
+}
+
+GeneticAlgorithm::GeneticAlgorithm(const GeneticAlgorithm &other): populationSize(other.populationSize),
+  crossingChance(other.crossingChance), mutationChance(other.mutationChance), bestIndividual(other.bestIndividual),
+  bestFitness(other.bestFitness), population(other.population), evaluator(other.evaluator){
+
+    std::random_device rd;
+    gen.seed(rd());
+};
 
 GeneticAlgorithm::GeneticAlgorithm(GeneticAlgorithm&& other) noexcept
 :populationSize(other.populationSize), crossingChance(other.crossingChance), mutationChance(other.mutationChance), bestIndividual(std::move(other.bestIndividual)),
-bestFitness(other.bestFitness), population(std::move(other.population)), evaluator(other.evaluator) {}
+bestFitness(other.bestFitness), population(std::move(other.population)), evaluator(other.evaluator) {
+    std::random_device rd;
+    gen.seed(rd());
+}
 
 GeneticAlgorithm &GeneticAlgorithm::operator=(const GeneticAlgorithm &other) {
     if (this == &other)
@@ -30,6 +45,9 @@ GeneticAlgorithm &GeneticAlgorithm::operator=(const GeneticAlgorithm &other) {
     bestIndividual = other.bestIndividual;
     bestFitness = other.bestFitness;
     population = other.population;
+
+    std::random_device rd;
+    gen.seed(rd());
 
     return *this;
 }
@@ -44,6 +62,9 @@ GeneticAlgorithm &GeneticAlgorithm::operator=(GeneticAlgorithm &&other) noexcept
     bestIndividual = std::move(other.bestIndividual);
     bestFitness = other.bestFitness;
     population = std::move(other.population);
+
+    std::random_device rd;
+    gen.seed(rd());
 
     return *this;
 }
@@ -83,8 +104,6 @@ void GeneticAlgorithm::runIteration() {
 
 void GeneticAlgorithm::initializeThePopulation() {
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
     std::uniform_int_distribution<> candidateDistribution(evaluator.iGetLowerBound(),evaluator.iGetUpperBound());
 
     const int numberOfPoints = evaluator.iGetNumberOfPoints();
@@ -121,17 +140,12 @@ void GeneticAlgorithm::findBest() {
     }
 }
 
-Individual GeneticAlgorithm::chooseParent() {
+Individual GeneticAlgorithm::chooseParent(){
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
     std::uniform_int_distribution<> index(0,populationSize-1);
 
-    int index1 = index(gen);
-    int index2 = index(gen);
-
-    Individual parent1 = population.at(index1);
-    Individual parent2 = population.at(index2);
+    Individual parent1 = population.at(index(gen));
+    Individual parent2 = population.at(index(gen));
 
     if ( parent1.fitness(evaluator) < parent2.fitness(evaluator) )
         return parent1;

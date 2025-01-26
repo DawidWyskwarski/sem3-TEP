@@ -30,11 +30,13 @@ private:
     void initializeThePopulation();
     void findBest();
 
-    Individual chooseParent();
+    [[nodiscard]] Individual chooseParent();
 
     int populationSize;
     double crossingChance;
     double mutationChance;
+
+    mt19937 gen;
 
     Individual bestIndividual;
     double bestFitness;
